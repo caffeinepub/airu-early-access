@@ -1,0 +1,62 @@
+@import url("https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap");
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 1 0 0;
+    --foreground: 0.13 0 0;
+    --card: 1 0 0;
+    --card-foreground: 0.13 0 0;
+    --popover: 1 0 0;
+    --popover-foreground: 0.13 0 0;
+    --primary: 0.13 0 0;
+    --primary-foreground: 1 0 0;
+    --secondary: 0.94 0.015 75;
+    --secondary-foreground: 0.13 0 0;
+    --muted: 0.94 0.015 75;
+    --muted-foreground: 0.46 0 0;
+    --accent: 0.8 0.1 220;
+    --accent-foreground: 1 0 0;
+    --destructive: 0.55 0.22 27;
+    --destructive-foreground: 1 0 0;
+    --border: 0.88 0.01 75;
+    --input: 0.88 0.01 75;
+    --ring: 0.13 0 0;
+    --radius: 0.5rem;
+    --beige: 0.94 0.015 75;
+    --beige-foreground: 0.13 0 0;
+    --footer-bg: 0.15 0.015 255;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+    font-family: "Plus Jakarta Sans", system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-family: "Plus Jakarta Sans", system-ui, sans-serif;
+  }
+}
+
+.font-display {
+  font-family: "Playfair Display", Georgia, serif;
+}
+
+/* Smooth scrolling */
+html {
+  scroll-behavior: smooth;
+}
