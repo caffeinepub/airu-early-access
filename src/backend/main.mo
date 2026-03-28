@@ -68,6 +68,9 @@ actor {
   var nextEntryId = 0;
   let entries = Map.empty<Nat, WaitlistEntry>();
 
+  // Lead Status Storage (separate map to avoid migration issues)
+  let leadStatuses = Map.empty<Nat, Text>();
+
   // Public Functions (accessible to everyone including guests)
   public shared ({ caller }) func submitWaitlist(name : Text, phone : Text, isWhatsApp : Bool, city : Text) : async Nat {
     let id = nextEntryId;
@@ -77,7 +80,7 @@ actor {
       phone;
       isWhatsApp;
       city;
-      timestamp = Int.abs(Time.now());
+      timestamp = Time.now();
     };
     entries.add(id, entry);
     nextEntryId += 1;
@@ -104,6 +107,20 @@ actor {
       Runtime.trap("Entry does not exist.");
     };
     entries.remove(id);
+  };
+
+  public query ({ caller }) func getLeadStatuses() : async [(Nat, Text)] {
+    if (not (AccessControl.hasPermission(accessControlState, caller, #admin))) {
+      Runtime.trap("Unauthorized: Only admins can access lead statuses");
+    };
+    leadStatuses.entries().toArray();
+  };
+
+  public shared ({ caller }) func updateLeadStatus(id : Nat, status : Text) : async () {
+    if (not (AccessControl.hasPermission(accessControlState, caller, #admin))) {
+      Runtime.trap("Unauthorized: Only admins can update lead statuses");
+    };
+    leadStatuses.add(id, status);
   };
 
   // Blog Types
@@ -139,7 +156,7 @@ actor {
       description;
       content;
       publishDate;
-      createdAt = Int.abs(Time.now());
+      createdAt = Time.now();
     };
 
     blogPosts.add(id, post);

@@ -40,12 +40,14 @@ export interface _SERVICE {
   'getCallerUserRole' : ActorMethod<[], UserRole>,
   'getCount' : ActorMethod<[], bigint>,
   'getEntries' : ActorMethod<[], Array<WaitlistEntry>>,
+  'getLeadStatuses' : ActorMethod<[], Array<[bigint, string]>>,
   'getPost' : ActorMethod<[bigint], [] | [BlogPost]>,
   'getUserProfile' : ActorMethod<[Principal], [] | [UserProfile]>,
   'isCallerAdmin' : ActorMethod<[], boolean>,
   'listPosts' : ActorMethod<[], Array<BlogPost>>,
   'saveCallerUserProfile' : ActorMethod<[UserProfile], undefined>,
   'submitWaitlist' : ActorMethod<[string, string, boolean, string], bigint>,
+  'updateLeadStatus' : ActorMethod<[bigint, string], undefined>,
   'updatePost' : ActorMethod<
     [bigint, string, string, string, string],
     undefined

@@ -32,6 +32,7 @@ export enum UserRole {
     guest = "guest"
 }
 export interface backendInterface {
+    _initializeAccessControlWithSecret(userSecret: string): Promise<void>;
     assignCallerUserRole(user: Principal, role: UserRole): Promise<void>;
     createPost(title: string, description: string, content: string, publishDate: string): Promise<bigint>;
     deleteEntry(id: bigint): Promise<void>;
@@ -40,11 +41,13 @@ export interface backendInterface {
     getCallerUserRole(): Promise<UserRole>;
     getCount(): Promise<bigint>;
     getEntries(): Promise<Array<WaitlistEntry>>;
+    getLeadStatuses(): Promise<Array<[bigint, string]>>;
     getPost(id: bigint): Promise<BlogPost | null>;
     getUserProfile(user: Principal): Promise<UserProfile | null>;
     isCallerAdmin(): Promise<boolean>;
     listPosts(): Promise<Array<BlogPost>>;
     saveCallerUserProfile(profile: UserProfile): Promise<void>;
     submitWaitlist(name: string, phone: string, isWhatsApp: boolean, city: string): Promise<bigint>;
+    updateLeadStatus(id: bigint, status: string): Promise<void>;
     updatePost(id: bigint, title: string, description: string, content: string, publishDate: string): Promise<void>;
 }

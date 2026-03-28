@@ -10,7 +10,7 @@ interface WaitlistFormProps {
 export function WaitlistForm({ theme = "light" }: WaitlistFormProps) {
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
-  const [isWhatsApp, setIsWhatsApp] = useState(false);
+  const [isWhatsApp, setIsWhatsApp] = useState(true);
   const [city, setCity] = useState("");
   const [submitted, setSubmitted] = useState(false);
   const submitWaitlist = useSubmitWaitlist();
@@ -19,7 +19,7 @@ export function WaitlistForm({ theme = "light" }: WaitlistFormProps) {
 
   const inputClass = isDark
     ? "w-full rounded-xl border border-white/20 bg-white/10 text-white placeholder-white/40 px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-white/40 transition-all"
-    : "w-full rounded-xl border border-[#ddd] bg-white text-[#111111] placeholder-[#aaa] px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#111111] transition-all";
+    : "w-full rounded-xl border border-[#e0e0e0] bg-white text-[#0a0a0a] placeholder-[#aaa] px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-[#0a0a0a] transition-all";
 
   const labelClass = isDark
     ? "block text-xs font-medium text-white/60 mb-1.5 uppercase tracking-wide"
@@ -53,19 +53,17 @@ export function WaitlistForm({ theme = "light" }: WaitlistFormProps) {
         >
           <div
             className={`w-12 h-12 rounded-full flex items-center justify-center ${
-              isDark ? "bg-white/10" : "bg-[#f0ebe3]"
+              isDark ? "bg-white/10" : "bg-[#f5f0e8]"
             }`}
           >
             <CheckCircle
-              className={`w-6 h-6 ${isDark ? "text-white" : "text-[#111111]"}`}
+              className={`w-6 h-6 ${isDark ? "text-white" : "text-[#0a0a0a]"}`}
             />
           </div>
           <p
-            className={`text-lg font-semibold ${
-              isDark ? "text-white" : "text-[#111111]"
-            }`}
+            className={`text-lg font-semibold ${isDark ? "text-white" : "text-[#0a0a0a]"}`}
           >
-            You're in.
+            Reserved.
           </p>
           <p className={`text-sm ${isDark ? "text-white/60" : "text-[#888]"}`}>
             We'll notify you before launch.
@@ -113,30 +111,17 @@ export function WaitlistForm({ theme = "light" }: WaitlistFormProps) {
           </div>
           <div>
             <label htmlFor="wf-city" className={labelClass}>
-              City / Area
+              City
             </label>
             <input
               id="wf-city"
-              list="wf-city-suggestions"
-              placeholder="e.g. Gurgaon, Delhi, Mumbai..."
+              placeholder="Mumbai, Delhi, Bangalore..."
               value={city}
               onChange={(e) => setCity(e.target.value)}
               required
               className={inputClass}
               data-ocid="waitlist.input"
             />
-            <datalist id="wf-city-suggestions">
-              <option value="Gurgaon" />
-              <option value="Delhi" />
-              <option value="Noida" />
-              <option value="Bangalore" />
-              <option value="Mumbai" />
-              <option value="Chennai" />
-              <option value="Hyderabad" />
-              <option value="Pune" />
-              <option value="Kolkata" />
-              <option value="Jaipur" />
-            </datalist>
           </div>
           <label className="flex items-center gap-2.5 cursor-pointer">
             <input
@@ -144,12 +129,12 @@ export function WaitlistForm({ theme = "light" }: WaitlistFormProps) {
               checked={isWhatsApp}
               onChange={(e) => setIsWhatsApp(e.target.checked)}
               className={`rounded w-4 h-4 ${
-                isDark ? "accent-white" : "accent-[#111111]"
+                isDark ? "accent-white" : "accent-[#0a0a0a]"
               }`}
               data-ocid="waitlist.checkbox"
             />
             <span
-              className={`text-sm ${isDark ? "text-white/60" : "text-[#666]"}`}
+              className={`text-sm ${isDark ? "text-white/60" : "text-[#555]"}`}
             >
               This is my WhatsApp number
             </span>
@@ -165,27 +150,25 @@ export function WaitlistForm({ theme = "light" }: WaitlistFormProps) {
           <button
             type="submit"
             disabled={submitWaitlist.isPending}
-            className={`w-full rounded-full py-3.5 text-sm font-semibold transition-all duration-200 hover:scale-[1.02] active:scale-95 disabled:opacity-60 flex items-center justify-center gap-2 shadow-lg ${
+            className={`w-full rounded-full py-3.5 text-sm font-semibold transition-all duration-200 hover:scale-[1.02] active:scale-95 disabled:opacity-60 flex items-center justify-center gap-2 ${
               isDark
-                ? "bg-white text-[#111111] hover:bg-white/95"
-                : "bg-[#111111] text-white hover:bg-[#333]"
+                ? "bg-white text-[#0a0a0a] hover:bg-white/95"
+                : "bg-[#0a0a0a] text-white hover:bg-[#222]"
             }`}
             data-ocid="waitlist.submit_button"
           >
             {submitWaitlist.isPending ? (
               <>
-                <Loader2 className="w-4 h-4 animate-spin" /> Joining...
+                <Loader2 className="w-4 h-4 animate-spin" /> Reserving...
               </>
             ) : (
-              "Join Early Access"
+              "Reserve Your LumaAir"
             )}
           </button>
           <p
-            className={`text-center text-xs ${
-              isDark ? "text-white/40" : "text-[#aaa]"
-            }`}
+            className={`text-center text-xs ${isDark ? "text-white/40" : "text-[#aaa]"}`}
           >
-            No payment required • We'll notify you before launch
+            We'll notify you before launch. No spam. No payment required.
           </p>
         </motion.form>
       )}

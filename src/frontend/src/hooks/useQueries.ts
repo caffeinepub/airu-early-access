@@ -1,5 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import type { BlogPost, WaitlistEntry } from "../backend";
+import { createActorWithConfig } from "../config";
 import { useActor } from "./useActor";
 
 export function useWaitlistCount() {
@@ -47,8 +48,9 @@ export function useSubmitWaitlist() {
     { name: string; phone: string; isWhatsApp: boolean; city: string }
   >({
     mutationFn: async ({ name, phone, isWhatsApp, city }) => {
-      if (!actor) throw new Error("Not connected");
-      return actor.submitWaitlist(name, phone, isWhatsApp, city);
+      // Use cached actor if available, otherwise create a fresh anonymous one
+      const resolvedActor = actor ?? (await createActorWithConfig());
+      return resolvedActor.submitWaitlist(name, phone, isWhatsApp, city);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["waitlistCount"] });
@@ -146,6 +148,35 @@ export function useDeletePost() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["blogPosts"] });
+    },
+  });
+}
+
+export function useLeadStatuses() {
+  const { actor, isFetching } = useActor();
+  return useQuery<Map<string, string>>({
+    queryKey: ["leadStatuses"],
+    queryFn: async () => {
+      if (!actor) return new Map();
+      const pairs = await actor.getLeadStatuses();
+      return new Map(
+        pairs.map(([id, status]: [bigint, string]) => [id.toString(), status]),
+      );
+    },
+    enabled: !!actor && !isFetching,
+  });
+}
+
+export function useUpdateLeadStatus() {
+  const { actor } = useActor();
+  const queryClient = useQueryClient();
+  return useMutation<void, Error, { id: bigint; status: string }>({
+    mutationFn: async ({ id, status }) => {
+      if (!actor) throw new Error("Not connected");
+      return actor.updateLeadStatus(id, status);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["leadStatuses"] });
     },
   });
 }

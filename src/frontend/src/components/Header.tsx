@@ -28,10 +28,10 @@ export function Header({ onJoinClick }: HeaderProps) {
       <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
         <a
           href="/"
-          className="text-xl font-display font-semibold text-[#111111] tracking-tight"
+          className="text-xl font-semibold text-[#111111] tracking-wide"
           data-ocid="nav.link"
         >
-          Airu
+          LumaAir
         </a>
         <nav className="hidden md:flex items-center gap-8">
           <a
@@ -70,34 +70,14 @@ export function Header({ onJoinClick }: HeaderProps) {
             FAQ
           </a>
         </nav>
-        <div className="flex items-center gap-5">
-          <a
-            href="https://instagram.com/breathefreshair.india"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="hidden md:inline text-sm text-[#aaa] hover:text-[#111] transition-colors"
-            data-ocid="nav.link"
-          >
-            Instagram
-          </a>
-          <a
-            href="https://youtube.com/@BreatheFreshAir"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="hidden md:inline text-sm text-[#aaa] hover:text-[#111] transition-colors"
-            data-ocid="nav.link"
-          >
-            YouTube
-          </a>
-          <button
-            type="button"
-            onClick={onJoinClick}
-            className="rounded-full bg-[#111111] text-white px-5 py-2.5 text-sm font-medium hover:bg-[#333] active:scale-95 transition-all"
-            data-ocid="nav.primary_button"
-          >
-            Reserve My Unit
-          </button>
-        </div>
+        <button
+          type="button"
+          onClick={onJoinClick}
+          className="rounded-full bg-[#111111] text-white px-5 py-2.5 text-sm font-medium hover:bg-[#333] active:scale-95 transition-all"
+          data-ocid="nav.primary_button"
+        >
+          Reserve Your LumaAir
+        </button>
       </div>
     </motion.header>
   );

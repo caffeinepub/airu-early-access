@@ -123,6 +123,8 @@ export interface backendInterface {
     getCallerUserRole(): Promise<UserRole>;
     getCount(): Promise<bigint>;
     getEntries(): Promise<Array<WaitlistEntry>>;
+    getLeadStatuses(): Promise<Array<[bigint, string]>>;
+    updateLeadStatus(id: bigint, status: string): Promise<void>;
     getPost(id: bigint): Promise<BlogPost | null>;
     getUserProfile(user: Principal): Promise<UserProfile | null>;
     isCallerAdmin(): Promise<boolean>;
@@ -257,6 +259,34 @@ export class Backend implements backendInterface {
             }
         } else {
             const result = await this.actor.getEntries();
+            return result;
+        }
+    }
+    async getLeadStatuses(): Promise<Array<[bigint, string]>> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.getLeadStatuses();
+                return result as Array<[bigint, string]>;
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.getLeadStatuses();
+            return result as Array<[bigint, string]>;
+        }
+    }
+    async updateLeadStatus(arg0: bigint, arg1: string): Promise<void> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.updateLeadStatus(arg0, arg1);
+                return result;
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.updateLeadStatus(arg0, arg1);
             return result;
         }
     }

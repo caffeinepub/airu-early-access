@@ -19,7 +19,7 @@ interface WaitlistModalProps {
 export function WaitlistModal({ open, onClose }: WaitlistModalProps) {
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
-  const [isWhatsApp, setIsWhatsApp] = useState(false);
+  const [isWhatsApp, setIsWhatsApp] = useState(true);
   const [city, setCity] = useState("");
   const [submittedCount, setSubmittedCount] = useState<bigint | null>(null);
   const submitWaitlist = useSubmitWaitlist();
@@ -45,7 +45,7 @@ export function WaitlistModal({ open, onClose }: WaitlistModalProps) {
     setTimeout(() => {
       setName("");
       setPhone("");
-      setIsWhatsApp(false);
+      setIsWhatsApp(true);
       setCity("");
       setSubmittedCount(null);
       submitWaitlist.reset();
@@ -68,29 +68,32 @@ export function WaitlistModal({ open, onClose }: WaitlistModalProps) {
               className="p-10 flex flex-col items-center text-center gap-4"
               data-ocid="waitlist.success_state"
             >
-              <div className="w-16 h-16 rounded-full bg-[#f0ebe3] flex items-center justify-center">
-                <CheckCircle className="w-8 h-8 text-[#111111]" />
+              <div
+                className="w-16 h-16 rounded-full flex items-center justify-center"
+                style={{ background: "#f5f0e8" }}
+              >
+                <CheckCircle className="w-8 h-8" style={{ color: "#0a0a0a" }} />
               </div>
-              <h3 className="text-2xl font-semibold text-[#111111] font-serif">
-                You're in!
+              <h3 className="text-2xl font-semibold text-[#0a0a0a]">
+                You're reserved!
               </h3>
-              <p className="text-[#666666] text-base">
+              <p className="text-[#666] text-base">
                 You've joined{" "}
-                <span className="font-semibold text-[#111111]">
+                <span className="font-semibold text-[#0a0a0a]">
                   {submittedCount.toString()} others
                 </span>{" "}
                 from the first batch.
               </p>
-              <p className="text-sm text-[#666666]">
-                We'll contact you before launch.
+              <p className="text-sm text-[#888]">
+                We'll notify you before launch. No spam.
               </p>
               <button
                 type="button"
                 onClick={handleClose}
-                className="mt-2 rounded-full bg-[#111111] text-white px-8 py-3 text-sm font-medium hover:bg-[#333] transition-colors"
+                className="mt-2 rounded-full bg-[#0a0a0a] text-white px-8 py-3 text-sm font-medium hover:bg-[#333] transition-colors"
                 data-ocid="waitlist.close_button"
               >
-                Close
+                Done
               </button>
             </motion.div>
           ) : (
@@ -100,23 +103,26 @@ export function WaitlistModal({ open, onClose }: WaitlistModalProps) {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0 }}
             >
-              <div className="bg-[#f0ebe3] px-8 pt-8 pb-6">
+              <div className="px-8 pt-8 pb-6" style={{ background: "#f5f0e8" }}>
                 <DialogHeader>
-                  <DialogTitle className="text-2xl font-display font-semibold text-[#111111]">
-                    Reserve Your Unit
+                  <DialogTitle className="text-2xl font-bold text-[#0a0a0a]">
+                    Reserve your LumaAir
                   </DialogTitle>
-                  <p className="text-[#666666] text-sm mt-1">
-                    Takes 30 seconds. No payment required.
+                  <p className="text-[#666] text-sm mt-2 leading-relaxed">
+                    Be among the first to experience cleaner air at home.
                   </p>
                 </DialogHeader>
               </div>
-              <form onSubmit={handleSubmit} className="px-8 py-6 space-y-4">
+              <form
+                onSubmit={handleSubmit}
+                className="px-8 py-6 space-y-4 bg-white"
+              >
                 <div className="space-y-1.5">
                   <Label
                     htmlFor="wl-name"
-                    className="text-[#111111] text-sm font-medium"
+                    className="text-[#0a0a0a] text-sm font-medium"
                   >
-                    Your Name
+                    Name
                   </Label>
                   <Input
                     id="wl-name"
@@ -124,14 +130,14 @@ export function WaitlistModal({ open, onClose }: WaitlistModalProps) {
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                     required
-                    className="rounded-xl border-[#ddd] focus-visible:ring-[#111111] text-[#111111]"
+                    className="rounded-xl border-[#e0e0e0] focus-visible:ring-[#0a0a0a]"
                     data-ocid="waitlist.input"
                   />
                 </div>
                 <div className="space-y-1.5">
                   <Label
                     htmlFor="wl-phone"
-                    className="text-[#111111] text-sm font-medium"
+                    className="text-[#0a0a0a] text-sm font-medium"
                   >
                     Phone Number
                   </Label>
@@ -142,52 +148,39 @@ export function WaitlistModal({ open, onClose }: WaitlistModalProps) {
                     value={phone}
                     onChange={(e) => setPhone(e.target.value)}
                     required
-                    className="rounded-xl border-[#ddd] focus-visible:ring-[#111111] text-[#111111]"
+                    className="rounded-xl border-[#e0e0e0] focus-visible:ring-[#0a0a0a]"
                     data-ocid="waitlist.input"
                   />
                 </div>
-                <label className="flex items-center gap-2.5 cursor-pointer">
+                <div className="space-y-1.5">
+                  <Label
+                    htmlFor="wl-city"
+                    className="text-[#0a0a0a] text-sm font-medium"
+                  >
+                    City
+                  </Label>
+                  <Input
+                    id="wl-city"
+                    placeholder="Mumbai, Delhi, Bangalore..."
+                    value={city}
+                    onChange={(e) => setCity(e.target.value)}
+                    required
+                    className="rounded-xl border-[#e0e0e0] focus-visible:ring-[#0a0a0a]"
+                    data-ocid="waitlist.input"
+                  />
+                </div>
+                <label className="flex items-center gap-3 cursor-pointer">
                   <input
                     type="checkbox"
                     checked={isWhatsApp}
                     onChange={(e) => setIsWhatsApp(e.target.checked)}
-                    className="rounded border-[#ddd] accent-[#111111] w-4 h-4"
+                    className="rounded border-[#ddd] accent-[#0a0a0a] w-4 h-4"
                     data-ocid="waitlist.checkbox"
                   />
                   <span className="text-sm text-[#555]">
                     This is my WhatsApp number
                   </span>
                 </label>
-                <div className="space-y-1.5">
-                  <Label
-                    htmlFor="wl-city"
-                    className="text-[#111111] text-sm font-medium"
-                  >
-                    City / Area
-                  </Label>
-                  <input
-                    id="wl-city"
-                    list="city-suggestions"
-                    placeholder="e.g. Gurgaon, Delhi, Mumbai..."
-                    value={city}
-                    onChange={(e) => setCity(e.target.value)}
-                    required
-                    className="w-full rounded-xl border border-[#ddd] focus:outline-none focus:ring-2 focus:ring-[#111111] text-[#111111] px-3 py-2 text-sm bg-white"
-                    data-ocid="waitlist.input"
-                  />
-                  <datalist id="city-suggestions">
-                    <option value="Gurgaon" />
-                    <option value="Delhi" />
-                    <option value="Noida" />
-                    <option value="Bangalore" />
-                    <option value="Mumbai" />
-                    <option value="Chennai" />
-                    <option value="Hyderabad" />
-                    <option value="Pune" />
-                    <option value="Kolkata" />
-                    <option value="Jaipur" />
-                  </datalist>
-                </div>
                 {submitWaitlist.isError && (
                   <p
                     className="text-red-500 text-sm"
@@ -199,7 +192,7 @@ export function WaitlistModal({ open, onClose }: WaitlistModalProps) {
                 <button
                   type="submit"
                   disabled={submitWaitlist.isPending}
-                  className="w-full rounded-full bg-[#111111] text-white py-3 text-sm font-medium hover:bg-[#333] transition-colors disabled:opacity-60 flex items-center justify-center gap-2"
+                  className="w-full rounded-full bg-[#0a0a0a] text-white py-3.5 text-sm font-semibold hover:bg-[#222] transition-colors disabled:opacity-60 flex items-center justify-center gap-2"
                   data-ocid="waitlist.submit_button"
                 >
                   {submitWaitlist.isPending ? (
@@ -207,16 +200,12 @@ export function WaitlistModal({ open, onClose }: WaitlistModalProps) {
                       <Loader2 className="w-4 h-4 animate-spin" /> Reserving...
                     </>
                   ) : (
-                    "Reserve My Unit"
+                    "Reserve Your LumaAir"
                   )}
                 </button>
-                <div className="text-center space-y-1 pt-1">
-                  <p className="text-xs text-[#999]">No spam. Only updates.</p>
-                  <p className="text-xs text-[#999]">
-                    We'll contact you before launch
-                  </p>
-                  <p className="text-xs text-[#999]">No payment required</p>
-                </div>
+                <p className="text-center text-xs text-[#aaa] leading-relaxed">
+                  We'll notify you before launch. No spam. No payment required.
+                </p>
               </form>
             </motion.div>
           )}

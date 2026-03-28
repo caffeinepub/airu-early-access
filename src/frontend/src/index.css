@@ -29,6 +29,8 @@
     --beige: 0.94 0.015 75;
     --beige-foreground: 0.13 0 0;
     --footer-bg: 0.15 0.015 255;
+    --amber: 0.72 0.14 65;
+    --amber-foreground: 1 0 0;
   }
 }
 
@@ -59,4 +61,19 @@
 /* Smooth scrolling */
 html {
   scroll-behavior: smooth;
+}
+
+/* Floating animation for hero product image */
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+.animate-float {
+  animation: float 3s ease-in-out infinite;
 }
