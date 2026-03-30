@@ -122,7 +122,7 @@ const FALLBACK_REVIEWS = [
     name: "Priya M.",
     city: "Bangalore",
     rating: BigInt(5),
-    message: "Room actually feels breathable after a few hours.",
+    message: "The difference is noticeable, especially after cooking.",
     status: { approved: null } as { approved: null },
     createdAt: BigInt(0),
   },
@@ -131,7 +131,16 @@ const FALLBACK_REVIEWS = [
     name: "Arjun K.",
     city: "Mumbai",
     rating: BigInt(5),
-    message: "No smell after cooking with AC on.",
+    message: "Feels like the air is actually cleaner, not just perfumed.",
+    status: { approved: null } as { approved: null },
+    createdAt: BigInt(0),
+  },
+  {
+    id: BigInt(-3),
+    name: "Sneha R.",
+    city: "Delhi",
+    rating: BigInt(5),
+    message: "Super easy to install and works quietly with the AC.",
     status: { approved: null } as { approved: null },
     createdAt: BigInt(0),
   },
@@ -177,7 +186,7 @@ function TestimonialsSection() {
       <div className="max-w-4xl mx-auto px-5">
         <FadeIn>
           <h2 className="text-4xl font-bold text-[#0a0a0a] mb-4">
-            What early users say
+            Early users say
           </h2>
           {avgRating !== null && (
             <div className="flex items-center gap-2 mb-10">
@@ -390,7 +399,7 @@ export function LandingPage() {
               className="bg-white text-[#0a0a0a] text-sm font-semibold px-5 py-2 rounded-full hover:bg-white/90 transition-all"
               data-ocid="nav.primary_button"
             >
-              Reserve Your LumaAir
+              Reserve your spot (Free)
             </button>
           </div>
         </div>
@@ -427,30 +436,49 @@ export function LandingPage() {
                 </span>
               </div>
               <h1 className="text-5xl md:text-7xl font-bold leading-[1.05] tracking-tight mb-6">
-                <span className="text-white block">Your AC doesn&apos;t</span>
-                <span className="text-white block">remove odor.</span>
+                <span className="text-white block">Turn your AC into</span>
+                <span className="text-white block">an odor-eliminating</span>
                 <em className="not-italic block" style={{ color: "#d97706" }}>
-                  LumaAir does.
+                  system
                 </em>
               </h1>
-              <p className="text-white/60 text-lg md:text-xl leading-relaxed max-w-xl mb-10">
-                A simple module that neutralizes trapped smell in closed AC
-                rooms — no electricity, no sprays, no artificial fragrance.
+              <p className="text-white/60 text-lg md:text-xl leading-relaxed max-w-xl mb-6">
+                No sprays. No chemicals. Just clean air using your AC airflow.
               </p>
+              <div className="flex flex-col gap-1.5 mb-8 mt-2">
+                <div className="flex items-center gap-3">
+                  <span className="text-white/40 text-sm line-through">
+                    ₹2,699
+                  </span>
+                  <span className="text-white font-bold text-base">₹1,799</span>
+                  <span
+                    className="text-xs font-semibold px-2 py-0.5 rounded-full"
+                    style={{ background: "#d97706", color: "#fff" }}
+                  >
+                    Launch Offer
+                  </span>
+                </div>
+                <p className="text-white/50 text-sm">
+                  ✓ Free extra carbon cartridge
+                </p>
+                <p className="text-white/50 text-sm">
+                  ✓ Save on replacements for 1 year
+                </p>
+                <p className="text-white/50 text-sm">
+                  ✓ Limited to first 500 users
+                </p>
+              </div>
               <button
                 type="button"
                 onClick={openModal}
                 className="bg-white text-[#0a0a0a] font-semibold text-base px-8 py-4 rounded-full hover:bg-white/95 hover:scale-[1.02] active:scale-95 transition-all duration-200 shadow-xl"
                 data-ocid="hero.primary_button"
               >
-                Reserve Your LumaAir
+                Reserve your spot (Free)
               </button>
               <div className="mt-4 space-y-1">
                 <p className="text-white/35 text-sm">
-                  No upfront payment · Limited first batch
-                </p>
-                <p className="text-white/25 text-xs">
-                  Early access users across India
+                  No payment required • Early access only
                 </p>
               </div>
             </motion.div>
@@ -613,10 +641,10 @@ export function LandingPage() {
           {/* Text block */}
           <FadeIn delay={0.2}>
             <h2 className="text-4xl md:text-5xl font-bold text-[#0a0a0a] leading-tight mb-4">
-              Meet LumaAir Odor Neutralizer
+              Meet LumaAir
             </h2>
             <p className="text-[#666] text-lg leading-relaxed mb-8">
-              Works with your AC airflow to naturally remove odor.
+              LumaAir works with your AC to filter air before it reaches you.
             </p>
             <div className="space-y-4">
               {["No electricity", "No fragrance", "No filters"].map((point) => (
@@ -640,10 +668,24 @@ export function LandingPage() {
         <div className="max-w-4xl mx-auto px-5">
           <FadeIn>
             <h2 className="text-4xl md:text-5xl font-bold text-[#0a0a0a] leading-tight mb-14 max-w-lg">
-              Your room feels closed.
-              <br />
-              Because it is.
+              Your AC doesn&apos;t remove odor. It spreads it.
             </h2>
+          </FadeIn>
+          <FadeIn delay={0.05}>
+            <div className="max-w-2xl mb-12 space-y-4">
+              <p className="text-[#555] text-lg leading-relaxed">
+                Every time your AC runs, it circulates the same air again and
+                again. That means cooking smell, smoke, and indoor odor stay
+                trapped inside your room.
+              </p>
+              <p className="text-[#555] text-lg leading-relaxed">
+                Sprays don&apos;t solve it. They just mask it.
+              </p>
+              <p className="text-[#0a0a0a] font-semibold text-lg">
+                What you actually need is to remove odor from the airflow
+                itself.
+              </p>
+            </div>
           </FadeIn>
           <div className="grid md:grid-cols-3 gap-5 mb-14">
             {[
@@ -781,21 +823,20 @@ export function LandingPage() {
           </FadeIn>
           <FadeIn delay={0.1}>
             <h2 className="text-4xl md:text-5xl font-bold text-[#0a0a0a] leading-tight mb-8">
-              A better way to fix room odor
+              Clean air, without adding anything to it
             </h2>
           </FadeIn>
           <FadeIn delay={0.15}>
-            <p className="text-[#555] text-lg md:text-xl leading-relaxed mb-8">
-              LumaAir works with your AC airflow to naturally neutralize odor.
+            <p className="text-[#555] text-lg md:text-xl leading-relaxed mb-6">
+              LumaAir uses activated carbon to trap odor particles from the
+              airflow—before the air reaches you.
             </p>
-            <div className="space-y-3 mb-8">
-              {["No sprays.", "No perfumes.", "No electricity."].map((line) => (
-                <p key={line} className="text-[#0a0a0a] font-bold text-xl">
-                  {line}
-                </p>
-              ))}
-            </div>
-            <p className="text-[#555] text-lg">Just cleaner air over time.</p>
+            <p className="text-[#555] text-lg md:text-xl leading-relaxed mb-8">
+              No fragrance added. No chemicals released. Just odor removed.
+            </p>
+            <p className="text-[#0a0a0a] font-semibold text-xl italic">
+              Think of it like a water filter, but for air.
+            </p>
           </FadeIn>
         </div>
       </section>
@@ -817,17 +858,20 @@ export function LandingPage() {
             {[
               {
                 num: "01",
-                text: "Attach near AC vent",
+                text: "Attach near your AC vent",
+                sub: "Easily mount LumaAir where air flows out.",
                 label: "[ Product on AC Vent ]",
               },
               {
                 num: "02",
-                text: "Air flows through LumaAir",
+                text: "Air passes through activated carbon",
+                sub: "The filter captures odor particles from the airflow.",
                 label: "[ Air Flowing Through Device ]",
               },
               {
                 num: "03",
-                text: "Odor particles get neutralized",
+                text: "Clean air enters your room",
+                sub: "You breathe fresher, odor-free air every day.",
                 label: "[ Clean Air Output ]",
               },
             ].map((step, i) => (
@@ -859,8 +903,11 @@ export function LandingPage() {
                     >
                       {step.num}
                     </p>
-                    <p className="text-white font-medium text-base">
+                    <p className="text-white font-medium text-base mb-1">
                       {step.text}
+                    </p>
+                    <p className="text-white/45 text-sm leading-snug">
+                      {step.sub}
                     </p>
                   </div>
                 </div>
@@ -930,6 +977,18 @@ export function LandingPage() {
       <section className="py-24 bg-white">
         <div className="max-w-3xl mx-auto px-5">
           <FadeIn>
+            <h2 className="text-4xl md:text-5xl font-bold text-[#0a0a0a] leading-tight mb-3">
+              See it in action
+            </h2>
+            <p className="text-[#555] text-lg leading-relaxed mb-3">
+              Real results. No masking.
+            </p>
+            <p className="text-[#555] text-lg leading-relaxed mb-8">
+              LumaAir actively traps odor from the air—so your room actually
+              feels fresh, not artificially scented.
+            </p>
+          </FadeIn>
+          <FadeIn delay={0.1}>
             <div
               className="rounded-2xl overflow-hidden relative"
               style={{ ...darkPlaceholder, aspectRatio: "16/9" }}
@@ -959,16 +1018,16 @@ export function LandingPage() {
         <div className="max-w-4xl mx-auto px-5">
           <FadeIn>
             <h2 className="text-4xl md:text-5xl font-bold text-[#0a0a0a] leading-tight mb-12">
-              Designed for everyday use
+              Why people love LumaAir
             </h2>
           </FadeIn>
           <div className="grid grid-cols-2 md:grid-cols-3 gap-5">
             {[
-              "Works with your AC",
-              "Reduces odor",
-              "No purifier needed",
-              "Easy setup",
-              "Silent",
+              "Eliminates odor, doesn\u2019t mask it",
+              "No chemicals or artificial fragrance",
+              "Works with your existing AC",
+              "No electricity required",
+              "Easy to install and maintain",
             ].map((benefit, i) => (
               <FadeIn key={benefit} delay={i * 0.08}>
                 <div className="bg-white rounded-2xl p-6 flex flex-col items-center text-center gap-4 shadow-[0_4px_24px_rgba(0,0,0,0.07)]">
@@ -1092,15 +1151,15 @@ export function LandingPage() {
         <div className="max-w-4xl mx-auto px-5">
           <FadeIn>
             <h2 className="text-4xl md:text-5xl font-bold text-[#0a0a0a] leading-tight mb-12">
-              Built for real life
+              Built for everyday use
             </h2>
           </FadeIn>
           <div className="grid sm:grid-cols-2 gap-5">
             {[
-              { icon: "🏢", text: "Used in bedrooms, kitchens, and offices" },
-              { icon: "🌿", text: "No chemicals, no artificial smell" },
               { icon: "✅", text: "Safe for daily use" },
+              { icon: "🌿", text: "No harmful chemicals" },
               { icon: "🇮🇳", text: "Designed for Indian homes" },
+              { icon: "🏢", text: "Works in bedrooms, kitchens, and offices" },
             ].map((item, i) => (
               <FadeIn key={item.text} delay={i * 0.08}>
                 <div className="flex items-start gap-4 p-6 rounded-2xl border border-[#f0f0f0] shadow-[0_2px_12px_rgba(0,0,0,0.05)]">
@@ -1115,6 +1174,28 @@ export function LandingPage() {
 
       {/* Testimonials */}
       <TestimonialsSection />
+
+      {/* Cartridge Section */}
+      <section className="py-28 md:py-32 bg-white">
+        <div className="max-w-2xl mx-auto px-5">
+          <FadeIn>
+            <h2 className="text-4xl md:text-5xl font-bold text-[#0a0a0a] leading-tight mb-6">
+              Simple maintenance, long-term freshness
+            </h2>
+          </FadeIn>
+          <FadeIn delay={0.1}>
+            <p className="text-[#555] text-lg leading-relaxed mb-4">
+              LumaAir uses a replaceable carbon cartridge.
+            </p>
+            <p className="text-[#555] text-lg leading-relaxed mb-4">
+              For best performance, replace it every 2–3 months.
+            </p>
+            <p className="text-[#555] text-lg leading-relaxed mb-8">
+              This ensures your air stays consistently clean and odor-free.
+            </p>
+          </FadeIn>
+        </div>
+      </section>
 
       {/* Social */}
       <section className="py-24 bg-white">
@@ -1153,21 +1234,19 @@ export function LandingPage() {
         <div className="max-w-2xl mx-auto px-5 text-center">
           <FadeIn>
             <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">
-              Launching Soon
+              Launch offer (First 500 users)
             </h2>
-            <p className="text-white/50 text-lg mb-10">
-              Expected price:{" "}
-              <span style={{ color: "#d97706" }} className="font-semibold">
-                ₹1,599
-              </span>
-            </p>
+            <div className="flex items-baseline gap-3 justify-center mb-8">
+              <span className="text-white/40 text-lg line-through">₹2,699</span>
+              <span className="text-white font-bold text-3xl">₹1,799</span>
+            </div>
           </FadeIn>
           <FadeIn delay={0.1}>
-            <div className="space-y-3 mb-10">
+            <div className="space-y-3 mb-6">
               {[
-                "First 100 units — early access",
-                "Spots filling fast",
-                "No upfront payment required",
+                "Free extra carbon cartridge",
+                "Save on replacements for 1 year",
+                "Limited first batch access",
               ].map((point) => (
                 <div
                   key={point}
@@ -1181,17 +1260,17 @@ export function LandingPage() {
                 </div>
               ))}
             </div>
+            <p className="text-white/30 text-sm mb-8">
+              No payment required • Limited early access
+            </p>
             <button
               type="button"
               onClick={openModal}
               className="bg-white text-[#0a0a0a] font-semibold text-base px-8 py-4 rounded-full hover:bg-white/95 hover:scale-[1.02] active:scale-95 transition-all duration-200"
               data-ocid="preorder.primary_button"
             >
-              Reserve Your LumaAir
+              Reserve your spot (Free)
             </button>
-            <p className="text-white/30 text-xs mt-4">
-              You&apos;ll only be contacted when we launch. No spam.
-            </p>
           </FadeIn>
         </div>
       </section>
@@ -1201,7 +1280,7 @@ export function LandingPage() {
         <div className="max-w-2xl mx-auto px-5 text-center">
           <FadeIn>
             <h2 className="text-4xl md:text-6xl font-bold text-white leading-tight mb-4">
-              Don&apos;t get used to bad air.
+              Don&apos;t get used to bad air
             </h2>
             <p className="text-white/40 text-xl mb-10">
               Fix it before it becomes normal.
@@ -1212,10 +1291,10 @@ export function LandingPage() {
               className="bg-white text-[#0a0a0a] font-semibold text-base px-10 py-4 rounded-full hover:bg-white/95 hover:scale-[1.02] active:scale-95 transition-all duration-200 shadow-2xl"
               data-ocid="finalcta.primary_button"
             >
-              Reserve Your LumaAir
+              Reserve your spot (Free)
             </button>
             <p className="text-white/25 text-sm mt-5">
-              No upfront payment · Limited first batch
+              No payment required • Limited early access
             </p>
           </FadeIn>
         </div>
@@ -1305,7 +1384,7 @@ export function LandingPage() {
           <div className="flex items-center gap-2">
             <Zap className="w-4 h-4" style={{ color: "#d97706" }} />
             <span className="text-white/70 text-sm font-medium">
-              Limited Pre-Order Batch
+              Early access · First 500 units
             </span>
           </div>
           <button
@@ -1314,7 +1393,7 @@ export function LandingPage() {
             className="bg-white text-[#0a0a0a] font-semibold text-sm px-5 py-2 rounded-full hover:bg-white/90 transition-all"
             data-ocid="sticky.primary_button"
           >
-            Reserve Your LumaAir
+            Reserve your spot (Free)
           </button>
         </div>
       </div>
