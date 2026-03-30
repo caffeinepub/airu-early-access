@@ -30,6 +30,19 @@ export const BlogPost = IDL.Record({
   'createdAt' : IDL.Int,
   'description' : IDL.Text,
 });
+export const ReviewStatus = IDL.Variant({
+  'pending' : IDL.Null,
+  'approved' : IDL.Null,
+});
+export const Review = IDL.Record({
+  'id' : IDL.Nat,
+  'name' : IDL.Text,
+  'city' : IDL.Text,
+  'rating' : IDL.Nat,
+  'message' : IDL.Text,
+  'createdAt' : IDL.Int,
+  'status' : ReviewStatus,
+});
 
 export const idlService = IDL.Service({
   '_initializeAccessControlWithSecret' : IDL.Func([IDL.Text], [], []),
@@ -59,11 +72,19 @@ export const idlService = IDL.Service({
       [IDL.Nat],
       [],
     ),
+  'getLeadStatuses' : IDL.Func([], [IDL.Vec(IDL.Tuple(IDL.Nat, IDL.Text))], ['query']),
+  'updateLeadStatus' : IDL.Func([IDL.Nat, IDL.Text], [], []),
   'updatePost' : IDL.Func(
       [IDL.Nat, IDL.Text, IDL.Text, IDL.Text, IDL.Text],
       [],
       [],
     ),
+  'submitReview' : IDL.Func([IDL.Text, IDL.Text, IDL.Nat, IDL.Text], [IDL.Nat], []),
+  'getApprovedReviews' : IDL.Func([], [IDL.Vec(Review)], ['query']),
+  'getPendingReviews' : IDL.Func([], [IDL.Vec(Review)], ['query']),
+  'approveReview' : IDL.Func([IDL.Nat], [], []),
+  'deleteReview' : IDL.Func([IDL.Nat], [], []),
+  'addManualReview' : IDL.Func([IDL.Text, IDL.Text, IDL.Nat, IDL.Text], [IDL.Nat], []),
 });
 
 export const idlInitArgs = [];
@@ -90,6 +111,19 @@ export const idlFactory = ({ IDL }) => {
     'publishDate' : IDL.Text,
     'createdAt' : IDL.Int,
     'description' : IDL.Text,
+  });
+  const ReviewStatus = IDL.Variant({
+    'pending' : IDL.Null,
+    'approved' : IDL.Null,
+  });
+  const Review = IDL.Record({
+    'id' : IDL.Nat,
+    'name' : IDL.Text,
+    'city' : IDL.Text,
+    'rating' : IDL.Nat,
+    'message' : IDL.Text,
+    'createdAt' : IDL.Int,
+    'status' : ReviewStatus,
   });
   
   return IDL.Service({
@@ -120,11 +154,19 @@ export const idlFactory = ({ IDL }) => {
         [IDL.Nat],
         [],
       ),
+    'getLeadStatuses' : IDL.Func([], [IDL.Vec(IDL.Tuple(IDL.Nat, IDL.Text))], ['query']),
+    'updateLeadStatus' : IDL.Func([IDL.Nat, IDL.Text], [], []),
     'updatePost' : IDL.Func(
         [IDL.Nat, IDL.Text, IDL.Text, IDL.Text, IDL.Text],
         [],
         [],
       ),
+    'submitReview' : IDL.Func([IDL.Text, IDL.Text, IDL.Nat, IDL.Text], [IDL.Nat], []),
+    'getApprovedReviews' : IDL.Func([], [IDL.Vec(Review)], ['query']),
+    'getPendingReviews' : IDL.Func([], [IDL.Vec(Review)], ['query']),
+    'approveReview' : IDL.Func([IDL.Nat], [], []),
+    'deleteReview' : IDL.Func([IDL.Nat], [], []),
+    'addManualReview' : IDL.Func([IDL.Text, IDL.Text, IDL.Nat, IDL.Text], [IDL.Nat], []),
   });
 };
 

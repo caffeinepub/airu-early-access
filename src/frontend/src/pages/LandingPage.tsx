@@ -2,6 +2,11 @@ import { Instagram, Mail, Play, Youtube, Zap } from "lucide-react";
 import { motion, useInView } from "motion/react";
 import { useRef, useState } from "react";
 import { WaitlistModal } from "../components/WaitlistModal";
+import {
+  type Review,
+  useGetApprovedReviews,
+  useSubmitReview,
+} from "../hooks/useQueries";
 
 function FadeIn({
   children,
@@ -27,35 +32,328 @@ function FadeIn({
   );
 }
 
-// Dark placeholder style
+// Premium dark gradient placeholder
 const darkPlaceholder = {
-  background: "linear-gradient(135deg, #1a1a18 0%, #2a2520 100%)",
+  background: "linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%)",
   borderRadius: "16px",
-  border: "1px solid rgba(255,255,255,0.08)",
-  boxShadow: "0 4px 24px rgba(0,0,0,0.18)",
+  border: "1px solid rgba(255,255,255,0.07)",
+  boxShadow: "0 4px 24px rgba(0,0,0,0.22)",
 } as React.CSSProperties;
 
 // Light/beige placeholder style
 const lightPlaceholder = {
-  background: "#ede8df",
+  background: "linear-gradient(135deg, #f5f0e8 0%, #e8dcc8 100%)",
   borderRadius: "16px",
   border: "1px solid #d4cfc6",
-  boxShadow: "0 4px 24px rgba(0,0,0,0.08)",
+  boxShadow: "0 4px 24px rgba(0,0,0,0.06)",
 } as React.CSSProperties;
 
 const placeholderLabelDark: React.CSSProperties = {
-  color: "rgba(255,255,255,0.3)",
-  fontSize: "0.85rem",
+  color: "rgba(255,255,255,0.28)",
+  fontSize: "0.8rem",
   fontStyle: "italic",
-  letterSpacing: "0.05em",
+  letterSpacing: "0.06em",
+  textAlign: "center",
 };
 
 const placeholderLabelLight: React.CSSProperties = {
   color: "#9a948a",
-  fontSize: "0.85rem",
+  fontSize: "0.8rem",
   fontStyle: "italic",
-  letterSpacing: "0.05em",
+  letterSpacing: "0.06em",
+  textAlign: "center",
 };
+
+// Star display component
+function StarDisplay({
+  rating,
+  size = "sm",
+}: { rating: number; size?: "sm" | "lg" }) {
+  const fontSize = size === "lg" ? "1.2rem" : "0.95rem";
+  return (
+    <span style={{ fontSize, letterSpacing: "2px" }}>
+      {[1, 2, 3, 4, 5].map((i) => (
+        <span key={i} style={{ color: i <= rating ? "#d97706" : "#ddd" }}>
+          ★
+        </span>
+      ))}
+    </span>
+  );
+}
+
+// Interactive star selector
+function StarSelector({
+  value,
+  onChange,
+}: {
+  value: number;
+  onChange: (v: number) => void;
+}) {
+  const [hovered, setHovered] = useState(0);
+  return (
+    <div className="flex gap-1" data-ocid="reviews.toggle">
+      {[1, 2, 3, 4, 5].map((i) => (
+        <button
+          key={i}
+          type="button"
+          onClick={() => onChange(i)}
+          onMouseEnter={() => setHovered(i)}
+          onMouseLeave={() => setHovered(0)}
+          className="text-2xl transition-transform hover:scale-110 focus:outline-none"
+          style={{
+            color: i <= (hovered || value) ? "#d97706" : "#ccc",
+            background: "none",
+            border: "none",
+            cursor: "pointer",
+            padding: "2px",
+          }}
+          aria-label={`${i} star${i !== 1 ? "s" : ""}`}
+        >
+          ★
+        </button>
+      ))}
+    </div>
+  );
+}
+
+const FALLBACK_REVIEWS = [
+  {
+    id: BigInt(-1),
+    name: "Priya M.",
+    city: "Bangalore",
+    rating: BigInt(5),
+    message: "Room actually feels breathable after a few hours.",
+    status: { approved: null } as { approved: null },
+    createdAt: BigInt(0),
+  },
+  {
+    id: BigInt(-2),
+    name: "Arjun K.",
+    city: "Mumbai",
+    rating: BigInt(5),
+    message: "No smell after cooking with AC on.",
+    status: { approved: null } as { approved: null },
+    createdAt: BigInt(0),
+  },
+];
+
+function TestimonialsSection() {
+  const { data: approvedReviews = [], isLoading } = useGetApprovedReviews();
+  const submitReview = useSubmitReview();
+  const [submitted, setSubmitted] = useState(false);
+  const [form, setForm] = useState({
+    name: "",
+    city: "",
+    rating: 5,
+    message: "",
+  });
+  const [formError, setFormError] = useState("");
+
+  const displayReviews: Review[] =
+    approvedReviews.length > 0 ? approvedReviews : FALLBACK_REVIEWS;
+  const avgRating =
+    approvedReviews.length > 0
+      ? approvedReviews.reduce((sum, r) => sum + Number(r.rating), 0) /
+        approvedReviews.length
+      : null;
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setFormError("");
+    if (!form.name.trim() || !form.city.trim() || !form.message.trim()) {
+      setFormError("Please fill in all fields.");
+      return;
+    }
+    try {
+      await submitReview.mutateAsync(form);
+      setSubmitted(true);
+    } catch {
+      setFormError("Something went wrong. Please try again.");
+    }
+  };
+
+  return (
+    <section className="py-28 md:py-32" style={{ background: "#f5f0e8" }}>
+      <div className="max-w-4xl mx-auto px-5">
+        <FadeIn>
+          <h2 className="text-4xl font-bold text-[#0a0a0a] mb-4">
+            What early users say
+          </h2>
+          {avgRating !== null && (
+            <div className="flex items-center gap-2 mb-10">
+              <span style={{ color: "#d97706", fontSize: "1.1rem" }}>⭐</span>
+              <span className="text-lg font-semibold text-[#0a0a0a]">
+                {avgRating.toFixed(1)}/5
+              </span>
+              <span className="text-[#888] text-sm">
+                from {approvedReviews.length} early user
+                {approvedReviews.length !== 1 ? "s" : ""}
+              </span>
+            </div>
+          )}
+          {!avgRating && <div className="mb-10" />}
+        </FadeIn>
+
+        {isLoading ? (
+          <div
+            className="flex justify-center py-10"
+            data-ocid="reviews.loading_state"
+          >
+            <div className="w-8 h-8 rounded-full border-2 border-[#d97706] border-t-transparent animate-spin" />
+          </div>
+        ) : (
+          <div className="grid md:grid-cols-2 gap-6 mb-16">
+            {displayReviews.map((r, i) => (
+              <FadeIn key={r.id.toString()} delay={i * 0.1}>
+                <div
+                  className="bg-white rounded-2xl p-8 shadow-lg flex flex-col gap-4"
+                  data-ocid={`reviews.item.${i + 1}`}
+                >
+                  <StarDisplay rating={Number(r.rating)} />
+                  <p className="text-[#0a0a0a] text-xl leading-relaxed font-medium">
+                    &ldquo;{r.message}&rdquo;
+                  </p>
+                  <div className="flex items-center gap-3 mt-auto">
+                    <div
+                      className="w-10 h-10 rounded-full flex items-center justify-center text-white text-sm font-bold flex-shrink-0"
+                      style={{ background: "#0a0a0a" }}
+                    >
+                      {r.name[0]}
+                    </div>
+                    <div>
+                      <p className="text-[#0a0a0a] font-bold text-sm">
+                        {r.name}
+                      </p>
+                      <p className="text-[#999] text-xs">{r.city}</p>
+                    </div>
+                  </div>
+                </div>
+              </FadeIn>
+            ))}
+          </div>
+        )}
+
+        {/* Review submission form */}
+        <FadeIn delay={0.2}>
+          <div className="bg-white rounded-2xl p-8 shadow-lg max-w-xl mx-auto">
+            <h3 className="text-xl font-bold text-[#0a0a0a] mb-1">
+              Share your experience
+            </h3>
+            <p className="text-[#888] text-sm mb-6">
+              Tried LumaAir? Tell others what you think.
+            </p>
+
+            {submitted ? (
+              <div
+                className="flex flex-col items-center py-6 gap-3 text-center"
+                data-ocid="reviews.success_state"
+              >
+                <span className="text-3xl">🙏</span>
+                <p className="text-[#0a0a0a] font-semibold text-lg">
+                  Thanks! Your review will appear after approval.
+                </p>
+                <p className="text-[#888] text-sm">
+                  We review all submissions to keep quality high.
+                </p>
+              </div>
+            ) : (
+              <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+                <div className="grid sm:grid-cols-2 gap-4">
+                  <div>
+                    <label
+                      htmlFor="review-name"
+                      className="block text-xs font-semibold text-[#555] mb-1.5 uppercase tracking-wide"
+                    >
+                      Name
+                    </label>
+                    <input
+                      type="text"
+                      required
+                      placeholder="Your name"
+                      value={form.name}
+                      onChange={(e) =>
+                        setForm((p) => ({ ...p, name: e.target.value }))
+                      }
+                      className="w-full rounded-xl border border-[#e5e0d8] bg-[#faf8f5] px-4 py-2.5 text-sm text-[#111] focus:outline-none focus:ring-2 focus:ring-[#d97706]"
+                      data-ocid="reviews.input"
+                    />
+                  </div>
+                  <div>
+                    <label
+                      htmlFor="review-city"
+                      className="block text-xs font-semibold text-[#555] mb-1.5 uppercase tracking-wide"
+                    >
+                      City
+                    </label>
+                    <input
+                      type="text"
+                      required
+                      placeholder="Your city"
+                      value={form.city}
+                      onChange={(e) =>
+                        setForm((p) => ({ ...p, city: e.target.value }))
+                      }
+                      className="w-full rounded-xl border border-[#e5e0d8] bg-[#faf8f5] px-4 py-2.5 text-sm text-[#111] focus:outline-none focus:ring-2 focus:ring-[#d97706]"
+                      data-ocid="reviews.input"
+                    />
+                  </div>
+                </div>
+                <div>
+                  <label
+                    htmlFor="review-rating"
+                    className="block text-xs font-semibold text-[#555] mb-1.5 uppercase tracking-wide"
+                  >
+                    Rating
+                  </label>
+                  <StarSelector
+                    value={form.rating}
+                    onChange={(v) => setForm((p) => ({ ...p, rating: v }))}
+                  />
+                </div>
+                <div>
+                  <label
+                    htmlFor="review-message"
+                    className="block text-xs font-semibold text-[#555] mb-1.5 uppercase tracking-wide"
+                  >
+                    Your Experience
+                  </label>
+                  <textarea
+                    required
+                    rows={3}
+                    placeholder="Tell us what changed in your room…"
+                    value={form.message}
+                    onChange={(e) =>
+                      setForm((p) => ({ ...p, message: e.target.value }))
+                    }
+                    className="w-full rounded-xl border border-[#e5e0d8] bg-[#faf8f5] px-4 py-2.5 text-sm text-[#111] focus:outline-none focus:ring-2 focus:ring-[#d97706] resize-none"
+                    data-ocid="reviews.textarea"
+                  />
+                </div>
+                {formError && (
+                  <p
+                    className="text-red-500 text-sm"
+                    data-ocid="reviews.error_state"
+                  >
+                    {formError}
+                  </p>
+                )}
+                <button
+                  type="submit"
+                  disabled={submitReview.isPending}
+                  className="w-full rounded-full py-3 text-sm font-semibold text-white transition-all hover:opacity-90 disabled:opacity-60"
+                  style={{ background: "#0a0a0a" }}
+                  data-ocid="reviews.submit_button"
+                >
+                  {submitReview.isPending ? "Submitting…" : "Submit Review"}
+                </button>
+              </form>
+            )}
+          </div>
+        </FadeIn>
+      </div>
+    </section>
+  );
+}
 
 export function LandingPage() {
   const [modalOpen, setModalOpen] = useState(false);
@@ -106,17 +404,17 @@ export function LandingPage() {
             "linear-gradient(160deg, #0a0a0a 0%, #1a1410 60%, #0d0c0a 100%)",
         }}
       >
-        {/* Amber glow */}
+        {/* Ambient background glow */}
         <div
           className="absolute inset-0 pointer-events-none"
           style={{
             background:
-              "radial-gradient(ellipse 70% 50% at 30% 50%, rgba(217,119,6,0.12) 0%, transparent 70%)",
+              "radial-gradient(ellipse 70% 50% at 30% 50%, rgba(217,119,6,0.10) 0%, transparent 70%)",
           }}
         />
         <div className="max-w-6xl mx-auto px-5 py-28 md:py-36 relative z-10 w-full">
           <div className="flex flex-col md:flex-row items-center gap-12 md:gap-16">
-            {/* Text */}
+            {/* Text left */}
             <motion.div
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
@@ -129,7 +427,7 @@ export function LandingPage() {
                 </span>
               </div>
               <h1 className="text-5xl md:text-7xl font-bold leading-[1.05] tracking-tight mb-6">
-                <span className="text-white block">Your AC doesn't</span>
+                <span className="text-white block">Your AC doesn&apos;t</span>
                 <span className="text-white block">remove odor.</span>
                 <em className="not-italic block" style={{ color: "#d97706" }}>
                   LumaAir does.
@@ -157,46 +455,40 @@ export function LandingPage() {
               </div>
             </motion.div>
 
-            {/* Floating product image placeholder */}
+            {/* Floating product image — right side on desktop */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 1, delay: 0.3, ease: [0.22, 1, 0.36, 1] }}
-              className="flex-shrink-0 flex items-center justify-center"
+              className="flex-shrink-0 flex items-center justify-center w-full md:w-auto"
             >
-              <div className="animate-float relative">
-                {/* Amber glow ring */}
+              <div className="relative flex items-center justify-center">
+                {/* Radial amber glow behind product */}
                 <div
-                  className="absolute inset-0 rounded-3xl pointer-events-none"
+                  className="absolute pointer-events-none"
                   style={{
-                    boxShadow:
-                      "0 0 60px 20px rgba(217,119,6,0.18), 0 0 120px 40px rgba(217,119,6,0.08)",
+                    width: "500px",
+                    height: "500px",
+                    background:
+                      "radial-gradient(ellipse at center, rgba(251,191,36,0.25) 0%, transparent 70%)",
+                    transform: "translate(-50%, -50%)",
+                    top: "50%",
+                    left: "50%",
+                    borderRadius: "50%",
                   }}
                 />
-                <div
-                  className="flex items-center justify-center"
+                {/* Product image with float animation */}
+                <img
+                  src="/assets/generated/lumaair-product-hero.dim_800x900.png"
+                  alt="LumaAir Odor Neutralizer"
+                  className="animate-float relative z-10 drop-shadow-2xl"
                   style={{
-                    width: "clamp(180px, 22vw, 300px)",
-                    height: "clamp(230px, 28vw, 380px)",
-                    background:
-                      "linear-gradient(160deg, #1e1b16 0%, #0d0c0a 100%)",
-                    borderRadius: "28px",
-                    border: "1px solid rgba(217,119,6,0.2)",
-                    boxShadow:
-                      "0 24px 64px rgba(0,0,0,0.55), 0 8px 24px rgba(0,0,0,0.35)",
+                    width: "clamp(200px, 28vw, 340px)",
+                    height: "auto",
+                    filter:
+                      "drop-shadow(0 24px 48px rgba(217,119,6,0.18)) drop-shadow(0 8px 24px rgba(0,0,0,0.55))",
                   }}
-                >
-                  <span
-                    style={{
-                      ...placeholderLabelDark,
-                      fontSize: "0.75rem",
-                      textAlign: "center",
-                      padding: "0 16px",
-                    }}
-                  >
-                    [ LumaAir Device ]
-                  </span>
-                </div>
+                />
               </div>
             </motion.div>
           </div>
@@ -238,50 +530,71 @@ export function LandingPage() {
         </FadeIn>
       </section>
 
-      {/* ───────────────────────────────────────────────── */}
-      {/* PRODUCT SECTION — new, placed after Hero Image   */}
-      {/* ───────────────────────────────────────────────── */}
-      <section className="py-24 md:py-36" style={{ background: "#F5F0E8" }}>
-        <div className="max-w-2xl mx-auto px-5">
-          {/* Main product render */}
+      {/* ═══════════════════════════════════════════════ */}
+      {/* PRODUCT SECTION — dominant, directly after Hero */}
+      {/* ═══════════════════════════════════════════════ */}
+      <section
+        className="py-32 md:py-44"
+        style={{
+          background:
+            "linear-gradient(180deg, #F5F0E8 0%, #EDE8DF 50%, #F5F0E8 100%)",
+        }}
+      >
+        <div className="max-w-3xl mx-auto px-5">
+          {/* Main product image — large, centered */}
           <FadeIn>
             <div
-              className="w-full flex items-center justify-center mb-5"
+              className="w-full flex items-center justify-center mb-8"
               style={{
-                ...darkPlaceholder,
-                aspectRatio: "4/5",
-                background: "linear-gradient(160deg, #1c1916 0%, #0d0c0a 100%)",
+                minHeight: "520px",
+                background:
+                  "linear-gradient(160deg, #111110 0%, #1c1916 40%, #0d0c0a 100%)",
+                borderRadius: "28px",
+                boxShadow:
+                  "0 32px 80px rgba(0,0,0,0.22), 0 8px 28px rgba(0,0,0,0.14)",
+                overflow: "hidden",
+                position: "relative",
               }}
             >
-              <span
+              {/* Glow */}
+              <div
                 style={{
-                  ...placeholderLabelDark,
-                  fontSize: "0.8rem",
-                  textAlign: "center",
+                  position: "absolute",
+                  width: "60%",
+                  height: "60%",
+                  background:
+                    "radial-gradient(ellipse at center, rgba(251,191,36,0.15) 0%, transparent 70%)",
+                  top: "50%",
+                  left: "50%",
+                  transform: "translate(-50%, -50%)",
+                  pointerEvents: "none",
                 }}
-              >
-                [ LumaAir Product Render ]
-              </span>
+              />
+              <img
+                src="/assets/generated/lumaair-product-hero.dim_800x900.png"
+                alt="LumaAir Odor Neutralizer"
+                className="relative z-10"
+                style={{
+                  maxHeight: "480px",
+                  width: "auto",
+                  objectFit: "contain",
+                  filter: "drop-shadow(0 20px 40px rgba(0,0,0,0.55))",
+                }}
+              />
             </div>
           </FadeIn>
 
-          {/* Close-up detail */}
+          {/* Close-up detail placeholder */}
           <FadeIn delay={0.1}>
             <div
               className="w-full flex items-center justify-center mb-3"
               style={{
                 ...darkPlaceholder,
-                aspectRatio: "3/2",
-                background: "linear-gradient(160deg, #1c1916 0%, #0d0c0a 100%)",
+                aspectRatio: "3/1.2",
+                background: "linear-gradient(135deg, #1c1916 0%, #2a2520 100%)",
               }}
             >
-              <span
-                style={{
-                  ...placeholderLabelDark,
-                  fontSize: "0.8rem",
-                  textAlign: "center",
-                }}
-              >
+              <span style={placeholderLabelDark}>
                 [ Close-Up Product Detail ]
               </span>
             </div>
@@ -289,7 +602,7 @@ export function LandingPage() {
 
           <FadeIn delay={0.15}>
             <p
-              className="text-center text-sm italic mb-14"
+              className="text-center text-sm italic mb-16"
               style={{ color: "#9a948a" }}
             >
               Engineered with precision materials for consistent odor
@@ -334,33 +647,55 @@ export function LandingPage() {
           </FadeIn>
           <div className="grid md:grid-cols-3 gap-5 mb-14">
             {[
-              {
-                label: "Cooking smell stays",
-                src: "/assets/generated/problem-cooking.dim_800x600.jpg",
-                alt: "Cooking in kitchen",
-              },
-              {
-                label: "Smoke lingers",
-                src: "/assets/generated/problem-smoke.dim_800x600.jpg",
-                alt: "Smoke in room",
-              },
-              {
-                label: "Air feels heavy",
-                src: "/assets/generated/problem-closed-room.dim_800x600.jpg",
-                alt: "Closed room air",
-              },
+              { label: "Cooking smell", dark: true },
+              { label: "Smoke", dark: false },
+              { label: "Closed room", dark: true },
             ].map((item, i) => (
               <FadeIn key={item.label} delay={i * 0.1}>
-                <div className="bg-white rounded-2xl overflow-hidden shadow-[0_4px_24px_rgba(0,0,0,0.07)]">
-                  <img
-                    src={item.src}
-                    alt={item.alt}
-                    className="w-full object-cover"
-                    style={{ aspectRatio: "4/3" }}
-                  />
-                  <div className="p-6">
-                    <p className="text-[#0a0a0a] font-semibold text-lg">
+                <div
+                  className="rounded-2xl overflow-hidden"
+                  style={{
+                    boxShadow: "0 4px 24px rgba(0,0,0,0.10)",
+                  }}
+                >
+                  {/* Premium gradient placeholder */}
+                  <div
+                    style={{
+                      height: "180px",
+                      background: item.dark
+                        ? "linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%)"
+                        : "linear-gradient(135deg, #f5f0e8 0%, #e8dcc8 100%)",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      borderRadius: "16px 16px 0 0",
+                    }}
+                  >
+                    <span
+                      style={{
+                        ...(item.dark
+                          ? placeholderLabelDark
+                          : placeholderLabelLight),
+                      }}
+                    >
                       {item.label}
+                    </span>
+                  </div>
+                  <div
+                    className="p-6"
+                    style={{
+                      background: item.dark ? "#1a1a1a" : "#ede8df",
+                    }}
+                  >
+                    <p
+                      className="font-semibold text-lg"
+                      style={{ color: item.dark ? "#fff" : "#0a0a0a" }}
+                    >
+                      {item.label === "Cooking smell"
+                        ? "Cooking smell stays"
+                        : item.label === "Smoke"
+                          ? "Smoke lingers"
+                          : "Air feels heavy"}
                     </p>
                   </div>
                 </div>
@@ -372,10 +707,42 @@ export function LandingPage() {
               className="text-xl md:text-2xl font-medium italic"
               style={{ color: "#d97706" }}
             >
-              Your AC circulates air. It doesn't refresh it.
+              Your AC circulates air. It doesn&apos;t refresh it.
             </p>
           </FadeIn>
         </div>
+      </section>
+
+      {/* ════════════════════════════════════ */}
+      {/* CINEMATIC SECTION                    */}
+      {/* ════════════════════════════════════ */}
+      <section
+        style={{
+          background: "#000000",
+          minHeight: "100vh",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        <FadeIn>
+          <div
+            style={{
+              maxWidth: "800px",
+              textAlign: "center",
+              padding: "0 20px",
+            }}
+          >
+            <p
+              className="font-bold text-white leading-tight"
+              style={{ fontSize: "clamp(2rem, 6vw, 4.5rem" }}
+            >
+              The same air keeps circulating.
+              <br />
+              So does the smell.
+            </p>
+          </div>
+        </FadeIn>
       </section>
 
       {/* Insight Section */}
@@ -469,31 +836,25 @@ export function LandingPage() {
                   className="rounded-2xl overflow-hidden"
                   style={{ background: "rgba(255,255,255,0.05)" }}
                 >
-                  {/* Step image placeholder */}
                   <div
                     className="w-full flex items-center justify-center"
                     style={{
-                      aspectRatio: "4/3",
+                      height: "180px",
                       background:
-                        "linear-gradient(135deg, #1a1a18 0%, #2a2520 100%)",
+                        "linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%)",
+                      borderRadius: "16px 16px 0 0",
                       borderBottom: "1px solid rgba(255,255,255,0.06)",
                     }}
                   >
                     <span
-                      style={{
-                        ...placeholderLabelDark,
-                        fontSize: "0.75rem",
-                        textAlign: "center",
-                        padding: "0 12px",
-                      }}
+                      style={{ ...placeholderLabelDark, padding: "0 12px" }}
                     >
                       {step.label}
                     </span>
                   </div>
-                  {/* Step text */}
                   <div className="p-6">
                     <p
-                      className="text-2xl font-bold mb-2 font-serif"
+                      className="text-2xl font-bold mb-2"
                       style={{ color: "#d97706" }}
                     >
                       {step.num}
@@ -549,15 +910,7 @@ export function LandingPage() {
               className="w-full flex items-center justify-center rounded-2xl"
               style={{ ...darkPlaceholder, aspectRatio: "16/9" }}
             >
-              <span
-                style={{
-                  ...placeholderLabelDark,
-                  fontSize: "0.8rem",
-                  textAlign: "center",
-                }}
-              >
-                [ Living Room ]
-              </span>
+              <span style={{ ...placeholderLabelDark }}>[ Living Room ]</span>
             </div>
           </FadeIn>
           <FadeIn delay={0.1}>
@@ -565,13 +918,7 @@ export function LandingPage() {
               className="w-full flex items-center justify-center rounded-2xl"
               style={{ ...darkPlaceholder, aspectRatio: "16/9" }}
             >
-              <span
-                style={{
-                  ...placeholderLabelDark,
-                  fontSize: "0.8rem",
-                  textAlign: "center",
-                }}
-              >
+              <span style={{ ...placeholderLabelDark }}>
                 [ Closed Indoor Environment ]
               </span>
             </div>
@@ -591,7 +938,7 @@ export function LandingPage() {
                 className="absolute inset-0 flex flex-col items-center justify-center gap-4"
                 style={{
                   background:
-                    "radial-gradient(ellipse at center, rgba(217,119,6,0.1) 0%, transparent 70%)",
+                    "radial-gradient(ellipse at center, rgba(217,119,6,0.10) 0%, transparent 70%)",
                 }}
               >
                 <p style={placeholderLabelDark}>[ Product Demo Video ]</p>
@@ -717,7 +1064,7 @@ export function LandingPage() {
         <div className="max-w-3xl mx-auto px-5">
           <FadeIn>
             <h2 className="text-4xl md:text-5xl font-bold text-[#0a0a0a] leading-tight mb-12">
-              What you'll notice after using LumaAir
+              What you&apos;ll notice after using LumaAir
             </h2>
           </FadeIn>
           <div className="space-y-5">
@@ -756,7 +1103,7 @@ export function LandingPage() {
               { icon: "🇮🇳", text: "Designed for Indian homes" },
             ].map((item, i) => (
               <FadeIn key={item.text} delay={i * 0.08}>
-                <div className="flex items-start gap-4 p-6 rounded-2xl border border-[#f0f0f0]">
+                <div className="flex items-start gap-4 p-6 rounded-2xl border border-[#f0f0f0] shadow-[0_2px_12px_rgba(0,0,0,0.05)]">
                   <span className="text-2xl">{item.icon}</span>
                   <p className="text-[#0a0a0a] font-medium">{item.text}</p>
                 </div>
@@ -767,51 +1114,7 @@ export function LandingPage() {
       </section>
 
       {/* Testimonials */}
-      <section className="py-28 md:py-32" style={{ background: "#f5f0e8" }}>
-        <div className="max-w-4xl mx-auto px-5">
-          <FadeIn>
-            <h2 className="text-4xl font-bold text-[#0a0a0a] mb-12">
-              What early users say
-            </h2>
-          </FadeIn>
-          <div className="grid md:grid-cols-2 gap-6">
-            {[
-              {
-                quote: "Room actually feels breathable after a few hours.",
-                name: "Priya M.",
-                location: "Bangalore",
-              },
-              {
-                quote: "No smell even after cooking with AC on.",
-                name: "Arjun K.",
-                location: "Mumbai",
-              },
-            ].map((t, i) => (
-              <FadeIn key={t.name} delay={i * 0.1}>
-                <div className="bg-white rounded-2xl p-8 shadow-[0_4px_24px_rgba(0,0,0,0.07)]">
-                  <p className="text-[#0a0a0a] text-lg leading-relaxed mb-6 font-medium">
-                    &ldquo;{t.quote}&rdquo;
-                  </p>
-                  <div className="flex items-center gap-2">
-                    <div
-                      className="w-8 h-8 rounded-full flex items-center justify-center text-white text-xs font-bold"
-                      style={{ background: "#0a0a0a" }}
-                    >
-                      {t.name[0]}
-                    </div>
-                    <div>
-                      <p className="text-[#0a0a0a] text-sm font-semibold">
-                        {t.name}
-                      </p>
-                      <p className="text-[#999] text-xs">{t.location}</p>
-                    </div>
-                  </div>
-                </div>
-              </FadeIn>
-            ))}
-          </div>
-        </div>
-      </section>
+      <TestimonialsSection />
 
       {/* Social */}
       <section className="py-24 bg-white">
@@ -887,7 +1190,7 @@ export function LandingPage() {
               Reserve Your LumaAir
             </button>
             <p className="text-white/30 text-xs mt-4">
-              You'll only be contacted when we launch. No spam.
+              You&apos;ll only be contacted when we launch. No spam.
             </p>
           </FadeIn>
         </div>
@@ -898,7 +1201,7 @@ export function LandingPage() {
         <div className="max-w-2xl mx-auto px-5 text-center">
           <FadeIn>
             <h2 className="text-4xl md:text-6xl font-bold text-white leading-tight mb-4">
-              Don't get used to bad air.
+              Don&apos;t get used to bad air.
             </h2>
             <p className="text-white/40 text-xl mb-10">
               Fix it before it becomes normal.

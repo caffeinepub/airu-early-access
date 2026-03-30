@@ -25,9 +25,15 @@ import type { BlogPost, WaitlistEntry } from "../backend";
 import { useActor } from "../hooks/useActor";
 import { useInternetIdentity } from "../hooks/useInternetIdentity";
 import {
+  type Review,
+  useAddManualReview,
+  useApproveReview,
   useCreatePost,
   useDeleteEntry,
   useDeletePost,
+  useDeleteReview,
+  useGetApprovedReviews,
+  useGetPendingReviews,
   useIsAdmin,
   useLeadStatuses,
   useListPosts,
@@ -767,6 +773,355 @@ function BlogTab() {
   );
 }
 
+function StarDisplay({ rating }: { rating: number }) {
+  return (
+    <span style={{ letterSpacing: "2px" }}>
+      {[1, 2, 3, 4, 5].map((i) => (
+        <span key={i} style={{ color: i <= rating ? "#d97706" : "#ddd" }}>
+          ★
+        </span>
+      ))}
+    </span>
+  );
+}
+
+function StarSelector({
+  value,
+  onChange,
+}: {
+  value: number;
+  onChange: (v: number) => void;
+}) {
+  const [hovered, setHovered] = useState(0);
+  return (
+    <div className="flex gap-1">
+      {[1, 2, 3, 4, 5].map((i) => (
+        <button
+          key={i}
+          type="button"
+          onClick={() => onChange(i)}
+          onMouseEnter={() => setHovered(i)}
+          onMouseLeave={() => setHovered(0)}
+          className="text-2xl transition-transform hover:scale-110 focus:outline-none"
+          style={{
+            color: i <= (hovered || value) ? "#d97706" : "#ccc",
+            background: "none",
+            border: "none",
+            cursor: "pointer",
+            padding: "2px",
+          }}
+          aria-label={`${i} star${i !== 1 ? "s" : ""}`}
+        >
+          ★
+        </button>
+      ))}
+    </div>
+  );
+}
+
+function ReviewCard({
+  review,
+  onApprove,
+  onDelete,
+  isPending: isPendingReview,
+}: {
+  review: Review;
+  onApprove?: () => void;
+  onDelete: () => void;
+  isPending?: boolean;
+}) {
+  return (
+    <div
+      className="bg-white rounded-2xl border border-[#f0ebe3] p-5 flex flex-col gap-3"
+      data-ocid="reviews.card"
+    >
+      <div className="flex items-start justify-between gap-3">
+        <div>
+          <p className="font-bold text-[#111] text-sm">{review.name}</p>
+          <p className="text-[#888] text-xs">{review.city}</p>
+        </div>
+        <StarDisplay rating={Number(review.rating)} />
+      </div>
+      <p className="text-[#333] text-sm leading-relaxed">
+        &ldquo;{review.message}&rdquo;
+      </p>
+      <div className="flex items-center justify-between mt-auto pt-2 border-t border-[#f0ebe3]">
+        <p className="text-[#aaa] text-xs">{formatDate(review.createdAt)}</p>
+        <div className="flex gap-2">
+          {isPendingReview && onApprove && (
+            <button
+              type="button"
+              onClick={onApprove}
+              className="flex items-center gap-1.5 rounded-full bg-[#0a0a0a] text-white px-3 py-1.5 text-xs font-medium hover:bg-[#333] transition-colors"
+              data-ocid="reviews.primary_button"
+            >
+              Approve
+            </button>
+          )}
+          <button
+            type="button"
+            onClick={onDelete}
+            className="flex items-center gap-1.5 rounded-full border border-red-200 text-red-500 px-3 py-1.5 text-xs font-medium hover:bg-red-50 transition-colors"
+            data-ocid="reviews.delete_button"
+          >
+            <Trash2 className="w-3 h-3" /> Delete
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function ReviewsTab() {
+  const {
+    data: pendingReviews = [],
+    isLoading: loadingPending,
+    refetch: refetchPending,
+  } = useGetPendingReviews();
+  const {
+    data: approvedReviews = [],
+    isLoading: loadingApproved,
+    refetch: refetchApproved,
+  } = useGetApprovedReviews();
+  const approveReview = useApproveReview();
+  const deleteReview = useDeleteReview();
+  const addManualReview = useAddManualReview();
+  const [manualForm, setManualForm] = useState({
+    name: "",
+    city: "",
+    rating: 5,
+    message: "",
+  });
+  const [manualSubmitted, setManualSubmitted] = useState(false);
+  const [manualError, setManualError] = useState("");
+
+  const handleApprove = async (id: bigint) => {
+    await approveReview.mutateAsync(id);
+    refetchPending();
+    refetchApproved();
+  };
+
+  const handleDelete = async (id: bigint) => {
+    await deleteReview.mutateAsync(id);
+    refetchPending();
+    refetchApproved();
+  };
+
+  const handleManualSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setManualError("");
+    if (
+      !manualForm.name.trim() ||
+      !manualForm.city.trim() ||
+      !manualForm.message.trim()
+    ) {
+      setManualError("Please fill in all fields.");
+      return;
+    }
+    try {
+      await addManualReview.mutateAsync(manualForm);
+      setManualForm({ name: "", city: "", rating: 5, message: "" });
+      setManualSubmitted(true);
+      refetchApproved();
+      setTimeout(() => setManualSubmitted(false), 3000);
+    } catch {
+      setManualError("Failed to add review.");
+    }
+  };
+
+  return (
+    <div className="space-y-10">
+      {/* Pending Reviews */}
+      <div>
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="text-lg font-semibold text-[#111]">Pending Reviews</h2>
+          <span className="text-sm text-[#888]">
+            {pendingReviews.length} pending
+          </span>
+        </div>
+        {loadingPending ? (
+          <div
+            className="flex items-center gap-2 text-[#888] py-4"
+            data-ocid="reviews.loading_state"
+          >
+            <Loader2 className="w-4 h-4 animate-spin" /> Loading…
+          </div>
+        ) : pendingReviews.length === 0 ? (
+          <div
+            className="bg-[#faf8f5] rounded-2xl border border-[#f0ebe3] p-8 text-center text-[#aaa] text-sm"
+            data-ocid="reviews.empty_state"
+          >
+            No pending reviews
+          </div>
+        ) : (
+          <div className="grid md:grid-cols-2 gap-4">
+            {pendingReviews.map((r) => (
+              <ReviewCard
+                key={r.id.toString()}
+                review={r}
+                isPending
+                onApprove={() => handleApprove(r.id)}
+                onDelete={() => handleDelete(r.id)}
+              />
+            ))}
+          </div>
+        )}
+      </div>
+
+      {/* Approved Reviews */}
+      <div>
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="text-lg font-semibold text-[#111]">
+            Approved Reviews
+          </h2>
+          <span className="text-sm text-[#888]">
+            {approvedReviews.length} approved
+          </span>
+        </div>
+        {loadingApproved ? (
+          <div
+            className="flex items-center gap-2 text-[#888] py-4"
+            data-ocid="reviews.loading_state"
+          >
+            <Loader2 className="w-4 h-4 animate-spin" /> Loading…
+          </div>
+        ) : approvedReviews.length === 0 ? (
+          <div
+            className="bg-[#faf8f5] rounded-2xl border border-[#f0ebe3] p-8 text-center text-[#aaa] text-sm"
+            data-ocid="reviews.empty_state"
+          >
+            No approved reviews yet
+          </div>
+        ) : (
+          <div className="grid md:grid-cols-2 gap-4">
+            {approvedReviews.map((r) => (
+              <ReviewCard
+                key={r.id.toString()}
+                review={r}
+                onDelete={() => handleDelete(r.id)}
+              />
+            ))}
+          </div>
+        )}
+      </div>
+
+      {/* Add Manual Review */}
+      <div>
+        <h2 className="text-lg font-semibold text-[#111] mb-4">
+          Add Manual Review
+        </h2>
+        <div className="bg-white rounded-2xl border border-[#f0ebe3] p-6 max-w-xl">
+          {manualSubmitted && (
+            <div
+              className="mb-4 rounded-xl bg-green-50 border border-green-200 text-green-700 px-4 py-3 text-sm font-medium"
+              data-ocid="reviews.success_state"
+            >
+              Review added successfully!
+            </div>
+          )}
+          <form onSubmit={handleManualSubmit} className="flex flex-col gap-4">
+            <div className="grid sm:grid-cols-2 gap-4">
+              <div>
+                <label
+                  htmlFor="manual-name"
+                  className="block text-xs font-semibold text-[#555] mb-1.5 uppercase tracking-wide"
+                >
+                  Name
+                </label>
+                <input
+                  id="manual-name"
+                  type="text"
+                  required
+                  placeholder="Customer name"
+                  value={manualForm.name}
+                  onChange={(e) =>
+                    setManualForm((p) => ({ ...p, name: e.target.value }))
+                  }
+                  className="w-full rounded-xl border border-[#e5e0d8] bg-[#faf8f5] px-4 py-2.5 text-sm text-[#111] focus:outline-none focus:ring-2 focus:ring-[#d97706]"
+                  data-ocid="reviews.input"
+                />
+              </div>
+              <div>
+                <label
+                  htmlFor="manual-city"
+                  className="block text-xs font-semibold text-[#555] mb-1.5 uppercase tracking-wide"
+                >
+                  City
+                </label>
+                <input
+                  id="manual-city"
+                  type="text"
+                  required
+                  placeholder="City"
+                  value={manualForm.city}
+                  onChange={(e) =>
+                    setManualForm((p) => ({ ...p, city: e.target.value }))
+                  }
+                  className="w-full rounded-xl border border-[#e5e0d8] bg-[#faf8f5] px-4 py-2.5 text-sm text-[#111] focus:outline-none focus:ring-2 focus:ring-[#d97706]"
+                  data-ocid="reviews.input"
+                />
+              </div>
+            </div>
+            <div>
+              <label
+                htmlFor="manual-rating"
+                className="block text-xs font-semibold text-[#555] mb-1.5 uppercase tracking-wide"
+              >
+                Rating
+              </label>
+              <StarSelector
+                value={manualForm.rating}
+                onChange={(v) => setManualForm((p) => ({ ...p, rating: v }))}
+              />
+            </div>
+            <div>
+              <label
+                htmlFor="manual-message"
+                className="block text-xs font-semibold text-[#555] mb-1.5 uppercase tracking-wide"
+              >
+                Message
+              </label>
+              <textarea
+                id="manual-message"
+                required
+                rows={3}
+                placeholder="Review message…"
+                value={manualForm.message}
+                onChange={(e) =>
+                  setManualForm((p) => ({ ...p, message: e.target.value }))
+                }
+                className="w-full rounded-xl border border-[#e5e0d8] bg-[#faf8f5] px-4 py-2.5 text-sm text-[#111] focus:outline-none focus:ring-2 focus:ring-[#d97706] resize-none"
+                data-ocid="reviews.textarea"
+              />
+            </div>
+            {manualError && (
+              <p
+                className="text-red-500 text-sm"
+                data-ocid="reviews.error_state"
+              >
+                {manualError}
+              </p>
+            )}
+            <button
+              type="submit"
+              disabled={addManualReview.isPending}
+              className="flex items-center justify-center gap-2 rounded-full bg-[#0a0a0a] text-white px-5 py-2.5 text-sm font-semibold hover:bg-[#333] transition-colors disabled:opacity-60"
+              data-ocid="reviews.submit_button"
+            >
+              {addManualReview.isPending ? (
+                <Loader2 className="w-4 h-4 animate-spin" />
+              ) : (
+                <Plus className="w-4 h-4" />
+              )}
+              Add Review
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function AdminDashboard() {
   const { clear, identity } = useInternetIdentity();
   const queryClient = useQueryClient();
@@ -816,6 +1171,13 @@ function AdminDashboard() {
               Reservations
             </TabsTrigger>
             <TabsTrigger
+              value="reviews"
+              className="rounded-full text-sm"
+              data-ocid="admin.tab"
+            >
+              Reviews
+            </TabsTrigger>
+            <TabsTrigger
               value="blog"
               className="rounded-full text-sm"
               data-ocid="admin.tab"
@@ -825,6 +1187,9 @@ function AdminDashboard() {
           </TabsList>
           <TabsContent value="reservations">
             <WaitlistTab />
+          </TabsContent>
+          <TabsContent value="reviews">
+            <ReviewsTab />
           </TabsContent>
           <TabsContent value="blog">
             <BlogTab />

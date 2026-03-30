@@ -26,6 +26,16 @@ export interface WaitlistEntry {
 export interface UserProfile {
     name: string;
 }
+export type ReviewStatus = { pending: null } | { approved: null };
+export interface Review {
+    id: bigint;
+    name: string;
+    city: string;
+    rating: bigint;
+    message: string;
+    status: ReviewStatus;
+    createdAt: bigint;
+}
 export enum UserRole {
     admin = "admin",
     user = "user",
@@ -50,4 +60,11 @@ export interface backendInterface {
     submitWaitlist(name: string, phone: string, isWhatsApp: boolean, city: string): Promise<bigint>;
     updateLeadStatus(id: bigint, status: string): Promise<void>;
     updatePost(id: bigint, title: string, description: string, content: string, publishDate: string): Promise<void>;
+    // Review system
+    submitReview(name: string, city: string, rating: bigint, message: string): Promise<bigint>;
+    getApprovedReviews(): Promise<Array<Review>>;
+    getPendingReviews(): Promise<Array<Review>>;
+    approveReview(id: bigint): Promise<void>;
+    deleteReview(id: bigint): Promise<void>;
+    addManualReview(name: string, city: string, rating: bigint, message: string): Promise<bigint>;
 }
