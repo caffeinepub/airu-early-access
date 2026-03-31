@@ -75,17 +75,17 @@ export function WaitlistModal({ open, onClose }: WaitlistModalProps) {
                 <CheckCircle className="w-8 h-8" style={{ color: "#0a0a0a" }} />
               </div>
               <h3 className="text-2xl font-semibold text-[#0a0a0a]">
-                You're reserved!
+                You&apos;re reserved!
               </h3>
               <p className="text-[#666] text-base">
-                You've joined{" "}
+                You&apos;ve joined{" "}
                 <span className="font-semibold text-[#0a0a0a]">
                   {submittedCount.toString()} others
                 </span>{" "}
                 from the first batch.
               </p>
               <p className="text-sm text-[#888]">
-                We'll notify you before launch. No spam.
+                We&apos;ll notify you before launch. No spam.
               </p>
               <button
                 type="button"
@@ -106,10 +106,10 @@ export function WaitlistModal({ open, onClose }: WaitlistModalProps) {
               <div className="px-8 pt-8 pb-6" style={{ background: "#f5f0e8" }}>
                 <DialogHeader>
                   <DialogTitle className="text-2xl font-bold text-[#0a0a0a]">
-                    Reserve your LumaAir
+                    Reserve your spot (Free)
                   </DialogTitle>
                   <p className="text-[#666] text-sm mt-2 leading-relaxed">
-                    Be among the first to experience cleaner air at home.
+                    No payment required &bull; Early access only
                   </p>
                 </DialogHeader>
               </div>
@@ -200,11 +200,12 @@ export function WaitlistModal({ open, onClose }: WaitlistModalProps) {
                       <Loader2 className="w-4 h-4 animate-spin" /> Reserving...
                     </>
                   ) : (
-                    "Reserve Your LumaAir"
+                    "Reserve your spot (Free)"
                   )}
                 </button>
                 <p className="text-center text-xs text-[#aaa] leading-relaxed">
-                  We'll notify you before launch. No spam. No payment required.
+                  We&apos;ll notify you before launch. No spam. No payment
+                  required.
                 </p>
               </form>
             </motion.div>

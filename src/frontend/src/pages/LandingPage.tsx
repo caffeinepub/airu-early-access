@@ -74,7 +74,7 @@ function StarDisplay({
     <span style={{ fontSize, letterSpacing: "2px" }}>
       {[1, 2, 3, 4, 5].map((i) => (
         <span key={i} style={{ color: i <= rating ? "#d97706" : "#ddd" }}>
-          ★
+          &#9733;
         </span>
       ))}
     </span>
@@ -109,7 +109,7 @@ function StarSelector({
           }}
           aria-label={`${i} star${i !== 1 ? "s" : ""}`}
         >
-          ★
+          &#9733;
         </button>
       ))}
     </div>
@@ -190,7 +190,9 @@ function TestimonialsSection() {
           </h2>
           {avgRating !== null && (
             <div className="flex items-center gap-2 mb-10">
-              <span style={{ color: "#d97706", fontSize: "1.1rem" }}>⭐</span>
+              <span style={{ color: "#d97706", fontSize: "1.1rem" }}>
+                &#11088;
+              </span>
               <span className="text-lg font-semibold text-[#0a0a0a]">
                 {avgRating.toFixed(1)}/5
               </span>
@@ -249,7 +251,7 @@ function TestimonialsSection() {
               Share your experience
             </h3>
             <p className="text-[#888] text-sm mb-6">
-              Tried LumaAir? Tell others what you think.
+              Tried AEROVAIX Odor Shield? Tell others what you think.
             </p>
 
             {submitted ? (
@@ -257,17 +259,17 @@ function TestimonialsSection() {
                 className="flex flex-col items-center py-6 gap-3 text-center"
                 data-ocid="reviews.success_state"
               >
-                <span className="text-3xl">🙏</span>
+                <span className="text-3xl">&#x1F64F;</span>
                 <p className="text-[#0a0a0a] font-semibold text-lg">
                   Thanks! Your review will appear after approval.
                 </p>
                 <p className="text-[#888] text-sm">
-                  We review all submissions to keep quality high.
+                  We review all submissions to keep things genuine.
                 </p>
               </div>
             ) : (
-              <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-                <div className="grid sm:grid-cols-2 gap-4">
+              <form onSubmit={handleSubmit} className="space-y-4">
+                <div className="grid grid-cols-2 gap-4">
                   <div>
                     <label
                       htmlFor="review-name"
@@ -276,7 +278,7 @@ function TestimonialsSection() {
                       Name
                     </label>
                     <input
-                      type="text"
+                      id="review-name"
                       required
                       placeholder="Your name"
                       value={form.name}
@@ -295,7 +297,7 @@ function TestimonialsSection() {
                       City
                     </label>
                     <input
-                      type="text"
+                      id="review-city"
                       required
                       placeholder="Your city"
                       value={form.city}
@@ -383,7 +385,7 @@ export function LandingPage() {
             className="text-white font-bold text-lg tracking-widest"
             data-ocid="nav.link"
           >
-            LumaAir
+            AEROVAIX
           </a>
           <div className="flex items-center gap-4">
             <a
@@ -432,25 +434,28 @@ export function LandingPage() {
             >
               <div className="inline-flex items-center border border-white/20 rounded-full px-4 py-1.5 mb-8">
                 <span className="text-white/70 text-xs font-medium tracking-widest uppercase">
-                  Pre-Order · Limited First Batch
+                  Pre-Order &middot; Limited First Batch
                 </span>
               </div>
               <h1 className="text-5xl md:text-7xl font-bold leading-[1.05] tracking-tight mb-6">
                 <span className="text-white block">Turn your AC into</span>
-                <span className="text-white block">an odor-eliminating</span>
+                <span className="text-white block">an odor-free airflow</span>
                 <em className="not-italic block" style={{ color: "#d97706" }}>
                   system
                 </em>
               </h1>
               <p className="text-white/60 text-lg md:text-xl leading-relaxed max-w-xl mb-6">
-                No sprays. No chemicals. Just clean air using your AC airflow.
+                AEROVAIX Odor Shield removes smell from your AC airflow using
+                activated carbon.
               </p>
               <div className="flex flex-col gap-1.5 mb-8 mt-2">
                 <div className="flex items-center gap-3">
                   <span className="text-white/40 text-sm line-through">
-                    ₹2,699
+                    &#8377;2,699
                   </span>
-                  <span className="text-white font-bold text-base">₹1,799</span>
+                  <span className="text-white font-bold text-base">
+                    &#8377;1,799
+                  </span>
                   <span
                     className="text-xs font-semibold px-2 py-0.5 rounded-full"
                     style={{ background: "#d97706", color: "#fff" }}
@@ -459,13 +464,13 @@ export function LandingPage() {
                   </span>
                 </div>
                 <p className="text-white/50 text-sm">
-                  ✓ Free extra carbon cartridge
+                  &#10003; Free extra carbon filter
                 </p>
                 <p className="text-white/50 text-sm">
-                  ✓ Save on replacements for 1 year
+                  &#10003; Save on replacements for 1 year
                 </p>
                 <p className="text-white/50 text-sm">
-                  ✓ Limited to first 500 users
+                  &#10003; Limited to first 500 users
                 </p>
               </div>
               <button
@@ -478,7 +483,7 @@ export function LandingPage() {
               </button>
               <div className="mt-4 space-y-1">
                 <p className="text-white/35 text-sm">
-                  No payment required • Early access only
+                  No payment required &bull; Early access only
                 </p>
               </div>
             </motion.div>
@@ -508,7 +513,7 @@ export function LandingPage() {
                 {/* Product image with float animation */}
                 <img
                   src="/assets/generated/lumaair-product-hero.dim_800x900.png"
-                  alt="LumaAir Odor Neutralizer"
+                  alt="AEROVAIX Odor Neutralizer"
                   className="animate-float relative z-10 drop-shadow-2xl"
                   style={{
                     width: "clamp(200px, 28vw, 340px)",
@@ -551,7 +556,7 @@ export function LandingPage() {
                 className="mt-2 font-semibold text-base tracking-widest uppercase"
                 style={{ color: "#d97706" }}
               >
-                LumaAir
+                AEROVAIX
               </p>
             </div>
           </div>
@@ -600,7 +605,7 @@ export function LandingPage() {
               />
               <img
                 src="/assets/generated/lumaair-product-hero.dim_800x900.png"
-                alt="LumaAir Odor Neutralizer"
+                alt="AEROVAIX Odor Neutralizer"
                 className="relative z-10"
                 style={{
                   maxHeight: "480px",
@@ -641,10 +646,16 @@ export function LandingPage() {
           {/* Text block */}
           <FadeIn delay={0.2}>
             <h2 className="text-4xl md:text-5xl font-bold text-[#0a0a0a] leading-tight mb-4">
-              Meet LumaAir
+              Meet AEROVAIX Odor Shield
             </h2>
-            <p className="text-[#666] text-lg leading-relaxed mb-8">
-              LumaAir works with your AC to filter air before it reaches you.
+            <p className="text-[#666] text-lg leading-relaxed mb-4">
+              AEROVAIX Odor Shield works with your AC to clean the air before it
+              reaches you. Using activated carbon, it traps odor particles and
+              delivers fresh, odor-free airflow—without adding any fragrance or
+              chemicals.
+            </p>
+            <p className="text-[#0a0a0a] font-semibold text-lg italic mb-8">
+              Like a water filter, but for air.
             </p>
             <div className="space-y-4">
               {["No electricity", "No fragrance", "No filters"].map((point) => (
@@ -668,22 +679,22 @@ export function LandingPage() {
         <div className="max-w-4xl mx-auto px-5">
           <FadeIn>
             <h2 className="text-4xl md:text-5xl font-bold text-[#0a0a0a] leading-tight mb-14 max-w-lg">
-              Your AC doesn&apos;t remove odor. It spreads it.
+              Your AC circulates odor. It doesn&apos;t remove it.
             </h2>
           </FadeIn>
           <FadeIn delay={0.05}>
             <div className="max-w-2xl mb-12 space-y-4">
               <p className="text-[#555] text-lg leading-relaxed">
-                Every time your AC runs, it circulates the same air again and
-                again. That means cooking smell, smoke, and indoor odor stay
-                trapped inside your room.
+                Every time your AC runs, it recirculates the same air again and
+                again. Cooking smell, smoke, and indoor odor stay trapped inside
+                your room.
               </p>
               <p className="text-[#555] text-lg leading-relaxed">
                 Sprays don&apos;t solve it. They just mask it.
               </p>
               <p className="text-[#0a0a0a] font-semibold text-lg">
-                What you actually need is to remove odor from the airflow
-                itself.
+                To actually fix the problem, odor needs to be removed from the
+                airflow itself.
               </p>
             </div>
           </FadeIn>
@@ -755,9 +766,9 @@ export function LandingPage() {
         </div>
       </section>
 
-      {/* ════════════════════════════════════ */}
+      {/* ╔══════════════════════════════════╗ */}
       {/* CINEMATIC SECTION                    */}
-      {/* ════════════════════════════════════ */}
+      {/* ╚══════════════════════════════════╝ */}
       <section
         style={{
           background: "#000000",
@@ -779,9 +790,7 @@ export function LandingPage() {
               className="font-bold text-white leading-tight"
               style={{ fontSize: "clamp(2rem, 6vw, 4.5rem" }}
             >
-              The same air keeps circulating.
-              <br />
-              So does the smell.
+              The same smell. The same air. Every day.
             </p>
           </div>
         </FadeIn>
@@ -816,7 +825,7 @@ export function LandingPage() {
           <FadeIn>
             <img
               src="/assets/generated/solution-product.dim_1200x675.jpg"
-              alt="LumaAir near AC vent"
+              alt="AEROVAIX Odor Shield near AC vent"
               className="w-full rounded-2xl object-cover mb-10"
               style={{ aspectRatio: "16/9" }}
             />
@@ -828,8 +837,8 @@ export function LandingPage() {
           </FadeIn>
           <FadeIn delay={0.15}>
             <p className="text-[#555] text-lg md:text-xl leading-relaxed mb-6">
-              LumaAir uses activated carbon to trap odor particles from the
-              airflow—before the air reaches you.
+              AEROVAIX Odor Shield uses activated carbon to trap odor particles
+              from the airflow—before the air reaches you.
             </p>
             <p className="text-[#555] text-lg md:text-xl leading-relaxed mb-8">
               No fragrance added. No chemicals released. Just odor removed.
@@ -849,9 +858,9 @@ export function LandingPage() {
               How it works
             </h2>
             <p className="text-white/50 text-lg leading-relaxed max-w-2xl mb-14">
-              Inside LumaAir is a natural adsorption material that captures and
-              neutralizes odor particles as air flows through it. No masking. No
-              chemicals in the air. Just removal.
+              Inside AEROVAIX Odor Shield is a natural adsorption material that
+              captures and neutralizes odor particles as air flows through it.
+              No masking. No chemicals in the air. Just removal.
             </p>
           </FadeIn>
           <div className="grid md:grid-cols-3 gap-5">
@@ -859,18 +868,18 @@ export function LandingPage() {
               {
                 num: "01",
                 text: "Attach near your AC vent",
-                sub: "Easily mount LumaAir where air flows out.",
+                sub: "Easily mount AEROVAIX Odor Shield where air flows out.",
                 label: "[ Product on AC Vent ]",
               },
               {
                 num: "02",
-                text: "Air passes through activated carbon",
+                text: "Air flows through activated carbon filter",
                 sub: "The filter captures odor particles from the airflow.",
                 label: "[ Air Flowing Through Device ]",
               },
               {
                 num: "03",
-                text: "Clean air enters your room",
+                text: "Odor particles are trapped before air enters your room",
                 sub: "You breathe fresher, odor-free air every day.",
                 label: "[ Clean Air Output ]",
               },
@@ -973,19 +982,19 @@ export function LandingPage() {
         </div>
       </section>
 
-      {/* Video Placeholder */}
+      {/* Video / Demo */}
       <section className="py-24 bg-white">
         <div className="max-w-3xl mx-auto px-5">
           <FadeIn>
             <h2 className="text-4xl md:text-5xl font-bold text-[#0a0a0a] leading-tight mb-3">
-              See it in action
+              See the difference
             </h2>
             <p className="text-[#555] text-lg leading-relaxed mb-3">
-              Real results. No masking.
+              Real odor removal. Not masking.
             </p>
             <p className="text-[#555] text-lg leading-relaxed mb-8">
-              LumaAir actively traps odor from the air—so your room actually
-              feels fresh, not artificially scented.
+              AEROVAIX Odor Shield traps odor from the airflow so your room
+              actually feels fresh.
             </p>
           </FadeIn>
           <FadeIn delay={0.1}>
@@ -1007,7 +1016,7 @@ export function LandingPage() {
               </div>
             </div>
             <p className="text-center text-[#999] text-sm mt-4">
-              See how LumaAir works in real conditions
+              See how AEROVAIX Odor Shield works in real conditions
             </p>
           </FadeIn>
         </div>
@@ -1018,7 +1027,7 @@ export function LandingPage() {
         <div className="max-w-4xl mx-auto px-5">
           <FadeIn>
             <h2 className="text-4xl md:text-5xl font-bold text-[#0a0a0a] leading-tight mb-12">
-              Why people love LumaAir
+              Why choose AEROVAIX
             </h2>
           </FadeIn>
           <div className="grid grid-cols-2 md:grid-cols-3 gap-5">
@@ -1053,6 +1062,37 @@ export function LandingPage() {
               </FadeIn>
             ))}
           </div>
+        </div>
+      </section>
+
+      {/* ╔══════════════════════════════════╗ */}
+      {/* TRANSPARENCY SECTION               */}
+      {/* ╚══════════════════════════════════╝ */}
+      <section className="py-24 md:py-28 bg-white">
+        <div className="max-w-2xl mx-auto px-5 text-center">
+          <FadeIn>
+            <h2 className="text-4xl md:text-5xl font-bold text-[#0a0a0a] leading-tight mb-8">
+              What this product does
+            </h2>
+            <p className="text-[#555] text-lg leading-relaxed mb-6">
+              AEROVAIX Odor Shield is designed to remove odor from indoor air.
+            </p>
+            <div
+              className="rounded-2xl p-6 mx-auto mb-6"
+              style={{
+                background: "#faf8f5",
+                border: "1px solid #e8e0d5",
+                maxWidth: "480px",
+              }}
+            >
+              <p className="text-[#0a0a0a] font-semibold text-lg">
+                It does not remove dust, PM2.5, or allergens.
+              </p>
+            </div>
+            <p className="text-[#888] text-base leading-relaxed">
+              This ensures clear expectations and consistent performance.
+            </p>
+          </FadeIn>
         </div>
       </section>
 
@@ -1109,10 +1149,10 @@ export function LandingPage() {
         <div className="max-w-3xl mx-auto px-5 text-center">
           <FadeIn>
             <p className="text-3xl md:text-5xl font-bold text-white leading-tight mb-6">
-              You spend 8–10 hours in your room every day.
+              You spend most of your day in your room.
             </p>
             <p className="text-white/50 text-xl">
-              The air you breathe there matters more than you think.
+              The air you breathe there matters.
             </p>
           </FadeIn>
         </div>
@@ -1123,14 +1163,14 @@ export function LandingPage() {
         <div className="max-w-3xl mx-auto px-5">
           <FadeIn>
             <h2 className="text-4xl md:text-5xl font-bold text-[#0a0a0a] leading-tight mb-12">
-              What you&apos;ll notice after using LumaAir
+              What you&apos;ll notice with AEROVAIX
             </h2>
           </FadeIn>
           <div className="space-y-5">
             {[
-              "Room feels breathable within hours",
-              "No lingering smell after cooking",
-              "Better sleep at night",
+              "No lingering cooking smell",
+              "Fresher air every morning",
+              "Room smells neutral, not perfumed",
             ].map((item, i) => (
               <FadeIn key={item} delay={i * 0.1}>
                 <div className="bg-white rounded-2xl p-7 flex items-center gap-5 shadow-[0_4px_24px_rgba(0,0,0,0.07)]">
@@ -1158,8 +1198,11 @@ export function LandingPage() {
             {[
               { icon: "✅", text: "Safe for daily use" },
               { icon: "🌿", text: "No harmful chemicals" },
-              { icon: "🇮🇳", text: "Designed for Indian homes" },
-              { icon: "🏢", text: "Works in bedrooms, kitchens, and offices" },
+              { icon: "🏠", text: "Designed for Indian homes" },
+              {
+                icon: "🏢",
+                text: "Works in bedrooms, kitchens, and offices",
+              },
             ].map((item, i) => (
               <FadeIn key={item.text} delay={i * 0.08}>
                 <div className="flex items-start gap-4 p-6 rounded-2xl border border-[#f0f0f0] shadow-[0_2px_12px_rgba(0,0,0,0.05)]">
@@ -1185,13 +1228,10 @@ export function LandingPage() {
           </FadeIn>
           <FadeIn delay={0.1}>
             <p className="text-[#555] text-lg leading-relaxed mb-4">
-              LumaAir uses a replaceable carbon cartridge.
-            </p>
-            <p className="text-[#555] text-lg leading-relaxed mb-4">
-              For best performance, replace it every 2–3 months.
+              Replace the carbon filter every 2–3 months for best performance.
             </p>
             <p className="text-[#555] text-lg leading-relaxed mb-8">
-              This ensures your air stays consistently clean and odor-free.
+              This keeps your air consistently odor-free.
             </p>
           </FadeIn>
         </div>
@@ -1202,7 +1242,7 @@ export function LandingPage() {
         <div className="max-w-2xl mx-auto px-5 text-center">
           <FadeIn>
             <h2 className="text-3xl md:text-4xl font-bold text-[#0a0a0a] mb-3">
-              Stay connected with LumaAir
+              Stay connected with AEROVAIX
             </h2>
             <p className="text-[#888] mb-10">
               Follow our journey, updates, and real user experiences.
@@ -1212,17 +1252,17 @@ export function LandingPage() {
             <div className="flex flex-col sm:flex-row items-center justify-center gap-6">
               <div className="flex items-center gap-3 text-[#0a0a0a]">
                 <Instagram className="w-5 h-5" style={{ color: "#d97706" }} />
-                <span className="font-medium text-sm">@lumaair.in</span>
+                <span className="font-medium text-sm">@aerovaix.in</span>
               </div>
               <div className="hidden sm:block w-px h-5 bg-[#eee]" />
               <div className="flex items-center gap-3 text-[#0a0a0a]">
                 <Youtube className="w-5 h-5" style={{ color: "#d97706" }} />
-                <span className="font-medium text-sm">LumaAir</span>
+                <span className="font-medium text-sm">AEROVAIX</span>
               </div>
               <div className="hidden sm:block w-px h-5 bg-[#eee]" />
               <div className="flex items-center gap-3 text-[#0a0a0a]">
                 <Mail className="w-5 h-5" style={{ color: "#d97706" }} />
-                <span className="font-medium text-sm">hello@lumaair.in</span>
+                <span className="font-medium text-sm">hello@aerovaix.in</span>
               </div>
             </div>
           </FadeIn>
@@ -1237,14 +1277,18 @@ export function LandingPage() {
               Launch offer (First 500 users)
             </h2>
             <div className="flex items-baseline gap-3 justify-center mb-8">
-              <span className="text-white/40 text-lg line-through">₹2,699</span>
-              <span className="text-white font-bold text-3xl">₹1,799</span>
+              <span className="text-white/40 text-lg line-through">
+                &#8377;2,699
+              </span>
+              <span className="text-white font-bold text-3xl">
+                &#8377;1,799
+              </span>
             </div>
           </FadeIn>
           <FadeIn delay={0.1}>
             <div className="space-y-3 mb-6">
               {[
-                "Free extra carbon cartridge",
+                "Free extra carbon filter",
                 "Save on replacements for 1 year",
                 "Limited first batch access",
               ].map((point) => (
@@ -1261,7 +1305,7 @@ export function LandingPage() {
               ))}
             </div>
             <p className="text-white/30 text-sm mb-8">
-              No payment required • Limited early access
+              No payment required &bull; Limited early access
             </p>
             <button
               type="button"
@@ -1294,7 +1338,7 @@ export function LandingPage() {
               Reserve your spot (Free)
             </button>
             <p className="text-white/25 text-sm mt-5">
-              No payment required • Limited early access
+              No payment required &bull; Limited early access
             </p>
           </FadeIn>
         </div>
@@ -1315,12 +1359,16 @@ export function LandingPage() {
                 a: "It continuously reduces and neutralizes odor over time using natural adsorption.",
               },
               {
-                q: "Is this an air purifier?",
-                a: "No. It's a passive odor neutralizer that works with AC airflow — no electricity or filters needed.",
+                q: "Does it remove dust or PM2.5?",
+                a: "No. AEROVAIX Odor Shield is designed specifically for odor removal, not dust, PM2.5, or allergens.",
               },
               {
-                q: "Do I need installation?",
-                a: "No tools needed. Just place it near your AC vent.",
+                q: "How often do I replace the filter?",
+                a: "Every 2\u20133 months for best results. Each replacement ensures consistently odor-free air.",
+              },
+              {
+                q: "How do I install it?",
+                a: "Simply attach it near your AC vent where air flows out. No tools or electricity needed.",
               },
               {
                 q: "Is it safe for daily use?",
@@ -1346,21 +1394,19 @@ export function LandingPage() {
           <div className="flex flex-col md:flex-row justify-between gap-10 mb-12">
             <div>
               <p className="text-white font-bold text-xl tracking-widest mb-2">
-                LumaAir
+                AEROVAIX
               </p>
-              <p className="text-white/40 text-sm">
-                Fresh air for closed spaces
-              </p>
+              <p className="text-white/40 text-sm">Fresh air, naturally.</p>
             </div>
             <div className="flex flex-col gap-2">
-              <p className="text-white/60 text-sm">hello@lumaair.in</p>
-              <p className="text-white/40 text-sm">Instagram: @lumaair.in</p>
-              <p className="text-white/40 text-sm">YouTube: LumaAir</p>
+              <p className="text-white/60 text-sm">hello@aerovaix.in</p>
+              <p className="text-white/40 text-sm">Instagram: @aerovaix.in</p>
+              <p className="text-white/40 text-sm">YouTube: AEROVAIX</p>
             </div>
           </div>
           <div className="border-t border-white/10 pt-6 flex flex-col sm:flex-row justify-between items-center gap-3">
             <p className="text-white/20 text-xs">
-              © {new Date().getFullYear()} LumaAir. All rights reserved.
+              &copy; {new Date().getFullYear()} AEROVAIX. All rights reserved.
             </p>
             <a
               href={`https://caffeine.ai?utm_source=caffeine-footer&utm_medium=referral&utm_content=${encodeURIComponent(typeof window !== "undefined" ? window.location.hostname : "")}`}
@@ -1384,7 +1430,7 @@ export function LandingPage() {
           <div className="flex items-center gap-2">
             <Zap className="w-4 h-4" style={{ color: "#d97706" }} />
             <span className="text-white/70 text-sm font-medium">
-              Early access · First 500 units
+              Early access &middot; First 500 units
             </span>
           </div>
           <button
